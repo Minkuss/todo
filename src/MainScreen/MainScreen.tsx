@@ -8,7 +8,7 @@ export const MainScreen: FC = () => {
   return (
     <div className = {classes.main}>
       <LeftNavigation/>
-      <TodoScreen/>
+      {/* <TodoScreen/> */}
     </div>
   )
 }
