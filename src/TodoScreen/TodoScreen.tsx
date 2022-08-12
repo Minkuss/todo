@@ -1,8 +1,12 @@
 import { H1 } from "@blueprintjs/core";
 import React, { FC } from "react";
 
-export const TodoScreen: FC = () => {
+interface ITodoScreenProps {
+  text: string;
+}
+
+export const TodoScreen: FC<ITodoScreenProps> = (props) => {
   return (
-    <H1>Todo</H1>
+    <H1>{props.text}</H1>
   )
 }
