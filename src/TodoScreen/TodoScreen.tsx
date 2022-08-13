@@ -1,5 +1,9 @@
-import { H1 } from "@blueprintjs/core";
 import React, { FC } from "react";
+import { Checkbox, H1, Label } from "@blueprintjs/core";
+
+import * as classes from "./TodoScreen.styles";
+import { TodoBlock } from "../components";
+import classNames from "classnames";
 
 interface ITodoScreenProps {
   text: string;
@@ -7,6 +11,12 @@ interface ITodoScreenProps {
 
 export const TodoScreen: FC<ITodoScreenProps> = (props) => {
   return (
-    <H1>{props.text}</H1>
+    <div className = {classes.main}>
+      <p className = {classes.h1}>{props.text}</p>
+      <div className = {classes.grow}>
+        <TodoBlock/>
+      </div>
+      <input type="text" className = {classNames("bp4-input .modifier", classes.inputTodo)} />
+    </div>
   )
 }
