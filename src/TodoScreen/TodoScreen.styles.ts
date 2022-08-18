@@ -16,9 +16,34 @@ export const main = style({
 })
 
 export const inputTodo = style({
-  flexShrink: 0
+  display: 'inline',
+  alignSelf: 'center',
+  background: '#D9D9D9',
+  boxShadow: 'none',
+  width: percent(100),
+  paddingLeft: px(18),
+  "$nest": {
+    "&::placeholder": {
+      fontSize: px(15),
+      color: "rgba(0, 0, 0, 0.29)",
+    },
+    "&:focus": {
+      boxShadow: 'none'
+    }
+  }
+})
+
+export const inputBlock = style({
+  display: 'flex',
+  marginLeft: px(21),
+  marginRight: px(21),
+  height: px(49),
+  background: '#D9D9D9',
+  borderRadius: px(14),
+  flexShrink: 0,
 })
 
 export const grow = style({
-  flexGrow: 0.9
+  flexGrow: 0.9,
+  overflowY: 'scroll'
 })

@@ -1,4 +1,3 @@
-import { width } from "csstips";
 import { percent, px } from "csx";
 import { style } from "typestyle";
 
@@ -9,6 +8,7 @@ export const todoBlock = style({
   marginLeft: px(19),
   marginRight: px(19),
   height: px(36),
+  marginTop: px(10),
 })
 
 export const todo = style({
@@ -28,6 +28,6 @@ export const todo = style({
     },
     "&:hover": {
       opacity: 1
-    }
+    },
   },
 })
