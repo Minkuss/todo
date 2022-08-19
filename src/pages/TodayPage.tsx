@@ -39,6 +39,7 @@ export const TodayScreen: FC = () => {
   const delTodo = useCallback((id: string) => {
     const deletedTodo = todos.filter(todo => todo.id !== id);
 
+    setTodos(deletedTodo);
 
     localStorage.setItem('todayTodo', JSON.stringify(deletedTodo));
   }, [todos])

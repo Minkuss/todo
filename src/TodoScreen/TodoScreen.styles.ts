@@ -45,5 +45,5 @@ export const inputBlock = style({
 
 export const grow = style({
   flexGrow: 0.9,
-  overflowY: 'scroll'
+  overflowY: 'scroll',
 })

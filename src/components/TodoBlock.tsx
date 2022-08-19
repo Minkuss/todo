@@ -21,6 +21,7 @@ export const TodoBlock: FC<ITodoBlock> = (props) => {
         };
         setStyle()
       }} icon = "circle" style = {clicked ? {textDecoration: "line-through"} : {}} alignText = "left" minimal className = {classes.todo}  text = {props.text} />
+      <Button className = {classes.edit} icon = "edit" minimal />
     </div>
   )
 }

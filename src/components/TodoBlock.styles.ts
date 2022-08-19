@@ -9,6 +9,8 @@ export const todoBlock = style({
   marginRight: px(19),
   height: px(36),
   marginTop: px(10),
+  display: 'flex',
+
 })
 
 export const todo = style({
@@ -30,4 +32,15 @@ export const todo = style({
       opacity: 1
     },
   },
+})
+
+export const edit = style({
+  borderTopRightRadius: px(10),
+  borderBottomRightRadius: px(10),
+  "$nest": {
+    "&:focus": {
+      outline: "none",
+      boxShadow: 'none'
+    },
+  }
 })

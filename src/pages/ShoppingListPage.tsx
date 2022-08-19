@@ -39,9 +39,10 @@ export const ShoppingListScreen: FC = () => {
   const delTodo = useCallback((id: string) => {
     const deletedTodo = todos.filter(todo => todo.id !== id);
 
+    setTodos(deletedTodo);
 
     localStorage.setItem('shoppingTodo', JSON.stringify(deletedTodo));
-  }, [todos])
+  }, [todos]);
 
   return (
     <TodoScreen onClick = {(id) => delTodo(id)} todos = {todos} onKeyUp = {(key) => key.key === "Enter" ? addTodo() : null} todoText = {todoText} onChange = {(text) => getValue(text)} name = 'Shopping List' />
