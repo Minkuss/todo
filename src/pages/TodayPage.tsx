@@ -44,7 +44,17 @@ export const TodayScreen: FC = () => {
     localStorage.setItem('todayTodo', JSON.stringify(deletedTodo));
   }, [todos])
 
+  const signTodo = useCallback((id: string) => {
+    const clicked: boolean = JSON.parse(localStorage.getItem('todoCheck') || "false")
+    todos.map(todo => {
+      if (todo.id === id) {
+        todo.important = clicked;
+      };
+    });
+    localStorage.setItem('todayTodo', JSON.stringify(todos));
+  }, [todos]);
+
   return (
-    <TodoScreen onClick = {(id) => delTodo(id)} todos = {todos} onKeyUp = {(key) => key.key === "Enter" ? addTodo() : null} todoText = {todoText} onChange = {(text) => getValue(text)} name = 'Today' />
+    <TodoScreen onImportant = {(id) => signTodo(id)} onClick = {(id) => delTodo(id)} todos = {todos} onKeyUp = {(key) => key.key === "Enter" ? addTodo() : null} todoText = {todoText} onChange = {(text) => getValue(text)} name = 'Today' />
   )
 }

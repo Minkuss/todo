@@ -10,8 +10,13 @@ export const ImportantScreen: FC = () => {
 
   useEffect(() => {
     console.log('render');
-    const data = localStorage.getItem('importantTodo') || "[]";
-    setTodos(JSON.parse(data));
+    // const importantData = localStorage.getItem('importantTodo') || "[]";
+    const todayData = localStorage.getItem('todayTodo') || "[]";
+    // const data1: ITodos[] = JSON.parse(importantData);
+    const data2: ITodos[] = JSON.parse(todayData);
+    // const data = data1.concat(data2)
+    const signedTodos = data2.filter(todo => todo.important === true);
+    setTodos(signedTodos);
   }, []);
 
   const getValue = useCallback((text: string) => {
@@ -22,7 +27,8 @@ export const ImportantScreen: FC = () => {
     const obj = {
       content: todoText,
       type: "important",
-      id: nanoid(),  
+      id: nanoid(),
+      important: true,  
     };
 
     const newTodo: ITodos[] = [
@@ -36,15 +42,15 @@ export const ImportantScreen: FC = () => {
 
   }, [todoText, todos])
 
-  const delTodo = useCallback((id: string) => {
-    const deletedTodo = todos.filter(todo => todo.id !== id);
+  // const delTodo = useCallback((id: string) => {
+  //   const deletedTodo = todos.filter(todo => todo.id !== id);
 
-    setTodos(deletedTodo);
+  //   setTodos(deletedTodo);
 
-    localStorage.setItem('importantTodo', JSON.stringify(deletedTodo));
-  }, [todos])
+  //   localStorage.setItem('importantTodo', JSON.stringify(deletedTodo));
+  // }, [todos])
 
   return (
-    <TodoScreen onClick = {(id) => delTodo(id)} todos = {todos} onKeyUp = {(key) => key.key === "Enter" ? addTodo() : null} todoText = {todoText} onChange = {(text) => getValue(text)} name = 'Important' />
+    <TodoScreen todos = {todos} onKeyUp = {(key) => key.key === "Enter" ? addTodo() : null} todoText = {todoText} onChange = {(text) => getValue(text)} name = 'Important' />
   )
 }

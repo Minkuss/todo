@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import { Button } from "@blueprintjs/core";
 
 import * as classes from "./TodoBlock.styles"
@@ -6,22 +6,32 @@ import * as classes from "./TodoBlock.styles"
 interface ITodoBlock {
   text: string;
   onClick?: () => unknown;
+  onImportant?: () => unknown;
+  name: string;
 }
 
 export const TodoBlock: FC<ITodoBlock> = (props) => {
   const [clicked, setClicked] = useState(false);
 
-  const setStyle = useCallback(() => {setClicked(true)}, [])
+  useEffect(() => {
+    const data = localStorage.getItem('todoCheck') || "false";
+    setClicked(JSON.parse(data));
+  }, []);
+
+  const setStyle = useCallback(() => {
+    setClicked(!clicked);
+    localStorage.setItem("todoCheck", JSON.stringify(!clicked));
+  }, [clicked])
 
   return (
     <div className = {classes.todoBlock}>
-      <Button onClick = {() => {
-        if (props.onClick !== undefined) {
-          props.onClick();
+      <Button onClick = {props.name === "Important" ? undefined : props.onClick} icon = "circle" alignText = "left" minimal className = {classes.todo}  text = {props.text} />
+      {props.name !== "Important" ? <Button onClick = {() => {
+        setStyle();
+        if (props.onImportant !== undefined) {
+          props.onImportant();
         };
-        setStyle()
-      }} icon = "circle" style = {clicked ? {textDecoration: "line-through"} : {}} alignText = "left" minimal className = {classes.todo}  text = {props.text} />
-      <Button className = {classes.edit} icon = "edit" minimal />
+      }} style = { !clicked ? {opacity: 0.7} : {opacity: 1}} className = {classes.edit} icon = "bookmark" minimal /> : null}
     </div>
   )
 }
