@@ -31,7 +31,7 @@ export const TodoBlock: FC<ITodoBlock> = (props) => {
         if (props.onImportant !== undefined) {
           props.onImportant();
         };
-      }} style = { !clicked ? {opacity: 0.7} : {opacity: 1}} className = {classes.edit} icon = "bookmark" minimal /> : null}
+      }} style = { clicked === false ? {opacity: 0.7} : {opacity: 1}} className = {classes.edit} icon = "bookmark" minimal /> : null}
     </div>
   )
 }
