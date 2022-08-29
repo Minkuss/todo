@@ -1,60 +1,63 @@
 import { nanoid } from "nanoid";
-import React, { FC, useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
+import { TodoService } from "../services/TodoService";
 import { TodoScreen } from "../TodoScreen";
-import { ITodos } from "../types";
+import { ITodo } from "../types";
 
 export const TodayScreen: FC = () => {
-  
-  const [todoText, setTodoText] = useState('');
-  const [todos, setTodos] = useState<ITodos[]>([]);
+  const [todoText, setTodoText] = useState("");
+  const [todos, setTodos] = useState<ITodo[]>([]);
 
   useEffect(() => {
-    console.log('render');
-    const data = localStorage.getItem('todayTodo') || "[]";
-    setTodos(JSON.parse(data));
+    console.log("render");
+    const data: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
+    const todos = data.filter(
+      (todo) => todo.type === "today" || todo.type === "important"
+    );
+    setTodos(todos);
   }, []);
 
   const getValue = useCallback((text: string) => {
-    setTodoText(text)
+    setTodoText(text);
   }, []);
 
   const addTodo = useCallback(() => {
-    const obj = {
-      content: todoText,
-      type: "today",
-      id: nanoid(),  
-    };
-
-    const newTodo: ITodos[] = [
-      ...todos, obj
-    ];
-
-    setTodos(newTodo);
-    setTodoText('');
-
-    localStorage.setItem('todayTodo', JSON.stringify(newTodo));
-
-  }, [todoText, todos])
-
-  const delTodo = useCallback((id: string) => {
-    const deletedTodo = todos.filter(todo => todo.id !== id);
-
-    setTodos(deletedTodo);
-
-    localStorage.setItem('todayTodo', JSON.stringify(deletedTodo));
-  }, [todos])
-
-  const signTodo = useCallback((id: string) => {
-    const clicked: boolean = JSON.parse(localStorage.getItem('todoCheck') || "false")
-    todos.map(todo => {
-      if (todo.id === id) {
-        todo.important = clicked;
+    if (todoText !== "") {
+      const obj = {
+        content: todoText,
+        type: "today",
+        id: nanoid(),
+        important: false,
       };
-    });
-    localStorage.setItem('todayTodo', JSON.stringify(todos));
-  }, [todos]);
+
+      const newTodo: ITodo[] = [...todos, obj];
+
+      setTodos(newTodo);
+      setTodoText("");
+
+      TodoService.create(obj);
+    }
+  }, [todoText, todos]);
+
+  const delTodo = useCallback(
+    (id: string) => {
+      const deletedTodo = todos.filter((todo) => todo.id !== id);
+
+      setTodos(deletedTodo);
+
+      TodoService.delete(id);
+    },
+    [todos]
+  );
 
   return (
-    <TodoScreen onImportant = {(id) => signTodo(id)} onClick = {(id) => delTodo(id)} todos = {todos} onKeyUp = {(key) => key.key === "Enter" ? addTodo() : null} todoText = {todoText} onChange = {(text) => getValue(text)} name = 'Today' />
-  )
-}
+    <TodoScreen
+      onClick={(id) => delTodo(id)}
+      todos={todos}
+      onKeyUp={(key) => (key.key === "Enter" ? addTodo() : null)}
+      todoText={todoText}
+      onChange={(text) => getValue(text)}
+      name="Today"
+    />
+  );
+};

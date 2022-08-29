@@ -1,50 +1,61 @@
 import { nanoid } from "nanoid";
-import React, { FC, useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
+import { TodoService } from "../services/TodoService";
 import { TodoScreen } from "../TodoScreen";
-import { ITodos } from "../types";
+import { ITodo } from "../types";
 
 export const ShoppingListScreen: FC = () => {
-  
-  const [todoText, setTodoText] = useState('');
-  const [todos, setTodos] = useState<ITodos[]>([]);
+  const [todoText, setTodoText] = useState("");
+  const [todos, setTodos] = useState<ITodo[]>([]);
 
   useEffect(() => {
-    console.log('render');
-    const data = localStorage.getItem('shoppingTodo') || "[]";
-    setTodos(JSON.parse(data));
+    console.log("render");
+    const data: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
+    const todos = data.filter((todo) => todo.type === "shoppingList");
+    setTodos(todos);
   }, []);
 
   const getValue = useCallback((text: string) => {
-    setTodoText(text)
+    setTodoText(text);
   }, []);
 
   const addTodo = useCallback(() => {
-    const obj = {
-      content: todoText,
-      type: "shoppingList",
-      id: nanoid(),  
-    };
+    if (todoText !== "") {
+      const obj = {
+        content: todoText,
+        type: "shoppingList",
+        id: nanoid(),
+        important: false,
+      };
 
-    const newTodo: ITodos[] = [
-      ...todos, obj
-    ];
+      const newTodo: ITodo[] = [...todos, obj];
 
-    setTodos(newTodo);
-    setTodoText('');
+      setTodos(newTodo);
+      setTodoText("");
 
-    localStorage.setItem('shoppingTodo', JSON.stringify(newTodo));
+      TodoService.create(obj);
+    }
+  }, [todoText, todos]);
 
-  }, [todoText, todos])
+  const delTodo = useCallback(
+    (id: string) => {
+      const deletedTodo = todos.filter((todo) => todo.id !== id);
 
-  const delTodo = useCallback((id: string) => {
-    const deletedTodo = todos.filter(todo => todo.id !== id);
+      setTodos(deletedTodo);
 
-    setTodos(deletedTodo);
-
-    localStorage.setItem('shoppingTodo', JSON.stringify(deletedTodo));
-  }, [todos]);
+      TodoService.delete(id);
+    },
+    [todos]
+  );
 
   return (
-    <TodoScreen onClick = {(id) => delTodo(id)} todos = {todos} onKeyUp = {(key) => key.key === "Enter" ? addTodo() : null} todoText = {todoText} onChange = {(text) => getValue(text)} name = 'Shopping List' />
-  )
-}
+    <TodoScreen
+      onClick={(id) => delTodo(id)}
+      todos={todos}
+      onKeyUp={(key) => (key.key === "Enter" ? addTodo() : null)}
+      todoText={todoText}
+      onChange={(text) => getValue(text)}
+      name="Shopping List"
+    />
+  );
+};

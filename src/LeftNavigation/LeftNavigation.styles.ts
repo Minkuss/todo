@@ -1,14 +1,14 @@
-import { background, percent, px } from "csx";
+import { background, important, percent, px } from "csx";
 import { style } from "typestyle";
 
 export const btn = style({
-  marginTop: px(15),
+  flex: important(1),
   border: "1px solid rgba(0, 0, 0, 0.15)",
   height: px(35),
   fontSize: px(15),
   lineHeight: px(15),
   color: "black",
-  opacity: "0.40",
+  opacity: "1",
   "$nest": {
     "&:focus": {
       outline: 'none',
@@ -17,6 +17,20 @@ export const btn = style({
 
     "&:hover": {
       opacity: "1"
+    }
+  }
+})
+
+export const link = style({
+  display: 'flex',
+  marginTop: px(15),
+  "$nest": {
+    "&:focus": {
+      textDecoration: "none",
+      outline: 'none',
+    },
+    "&:hover": {
+      textDecoration: "none"
     }
   }
 })
@@ -32,7 +46,7 @@ export const input = style({
   alignSelf: 'center',
   "$nest": {
     "&::placeholder": {
-      color: "rgba(0, 0, 0, 0.3)"
+      color: "rgba(0, 0, 0, 0.5)"
     }
   },
   backgroundColor: "#BDBDBD",

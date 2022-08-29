@@ -1,8 +1,6 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { TodoScreen } from "../TodoScreen";
 
 export const PlannedScreen: FC = () => {
-  return (
-    <TodoScreen name = 'Planned' />
-  )
-}
+  return <TodoScreen name="Planned" />;
+};

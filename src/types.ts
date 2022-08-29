@@ -1,7 +1,7 @@
-export interface ITodos {
+export interface ITodo {
   content: string;
   status?: string;
   type: string;
-  important?: boolean;
+  important: boolean;
   id: string;
 }

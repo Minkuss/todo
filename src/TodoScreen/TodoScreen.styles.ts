@@ -45,5 +45,34 @@ export const inputBlock = style({
 
 export const grow = style({
   flexGrow: 0.9,
-  overflowY: 'scroll',
+  overflowY: "scroll",
+})
+
+export const screen = style({
+  display: 'flex',
+  flexGrow: 1,
+})
+
+export const edit = style({
+  // backgroundColor: '#D9D9D9',
+  width: percent(100),
+})
+
+export const editInput = style({
+  background: '#D9D9D9',
+  fontSize: px(20),
+  height: px(50),
+  boxShadow: 'none',
+  width: percent(100),
+  paddingLeft: px(18),
+  borderRadius: px(14),
+  "$nest": {
+    "&::placeholder": {
+      fontSize: px(15),
+      color: "rgba(0, 0, 0, 0.29)",
+    },
+    "&:focus": {
+      boxShadow: 'none'
+    }
+  }
 })
