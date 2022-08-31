@@ -1,9 +1,7 @@
-import React, { FC, useCallback, useEffect, useState } from "react";
 import { Button, Icon, IconName } from "@blueprintjs/core";
-
-import * as classes from "./TodoBlock.styles";
+import React, { FC, useEffect, useState } from "react";
 import { ITodo } from "../types";
-import { Link } from "react-router-dom";
+import * as classes from "./TodoBlock.styles";
 
 interface ITodoBlock {
   text: string;
@@ -26,9 +24,9 @@ export const TodoBlock: FC<ITodoBlock> = (props) => {
         }
       }
     });
-  }, [props.id]);
+  });
 
-  const signTodo = useCallback(() => {
+  const signTodo = () => {
     setClicked(!clicked);
     const todos: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
     todos.map((todo) => {
@@ -37,15 +35,15 @@ export const TodoBlock: FC<ITodoBlock> = (props) => {
       }
     });
     localStorage.setItem("todos", JSON.stringify(todos));
-  }, [clicked, props.id]);
+  };
 
-  const setIcons = useCallback(() => {
+  const setIcons = () => {
     setIcon("confirm");
-  }, []);
+  };
 
-  const returnIcon = useCallback(() => {
+  const returnIcon = () => {
     setIcon("circle");
-  }, []);
+  };
 
   return (
     <div className={classes.todoBlock}>
@@ -72,9 +70,10 @@ export const TodoBlock: FC<ITodoBlock> = (props) => {
       {props.name !== "Shopping List" ? (
         <Button
           onClick={() => {
-            if (props.name !== "Important") {
-              signTodo();
-            }
+            // if (props.name !== "Important") {
+            //   signTodo();
+            // }
+            signTodo();
           }}
           style={clicked === false ? { opacity: 0.5 } : { opacity: 1 }}
           className={classes.sign}

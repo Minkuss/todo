@@ -1,11 +1,10 @@
-import React, { FC, useCallback, useState } from "react";
-
-import * as classes from "./TodoScreen.styles";
-import { TodoBlock } from "../components";
+import { Drawer } from "@blueprintjs/core";
 import classNames from "classnames";
+import { percent } from "csx";
+import React, { FC, useEffect, useState } from "react";
+import { TodoBlock } from "../components";
 import { ITodo } from "../types";
-import { Button, Card, Drawer, H1, TextArea } from "@blueprintjs/core";
-import { percent, px } from "csx";
+import * as classes from "./TodoScreen.styles";
 
 interface ITodoScreenProps {
   name: string;
@@ -31,44 +30,44 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
 
   const [clicked, setClicked] = useState(false);
   const [todo, setTodo] = useState<ITodo>();
-  const [editText, setEditText] = useState("");
+  const [editedText, setedEditText] = useState("");
 
-  const showEditBlock = useCallback(
-    (id: string) => {
-      setClicked(true);
-      setTodo(todos.find((element) => element.id === id));
-      const todoLocal = todos.find((element) => element.id === id);
-      setEditText(todoLocal?.content || "");
-    },
-    [todos]
-  );
+  useEffect(() => {
+    console.log("screen");
+  }, [onClick]);
 
-  const changeText = useCallback(
-    (text: string) => {
-      if (todo?.content !== undefined) {
-        todo.content = text;
-        setTodo(todo);
+  const showEditBlock = (id: string) => {
+    setClicked(true);
+    setTodo(todos.find((element) => element.id === id));
+    const todoLocal = todos.find((element) => element.id === id);
+    setedEditText(todoLocal?.content || "");
+  };
+
+  const changeText = (text: string) => {
+    if (todo?.content !== undefined) {
+      todo.content = text;
+      setTodo(todo);
+    }
+    setedEditText(text);
+  };
+
+  const editTodo = (key: React.KeyboardEvent) => {
+    if (key.key === "Enter") {
+      if (todo?.content !== "") {
+        const todosLocal: ITodo[] = JSON.parse(
+          localStorage.getItem("todos") || "[]"
+        );
+        const index = todosLocal.findIndex(
+          (element) => element.id === todo?.id
+        );
+        const before = todosLocal.slice(0, index);
+        const after = todosLocal.slice(index + 1);
+        const newTodos = [...before, todo, ...after];
+        localStorage.setItem("todos", JSON.stringify(newTodos));
+        setClicked(false);
       }
-      setEditText(text);
-    },
-    [todo]
-  );
-
-  const editTodo = useCallback(
-    (key: React.KeyboardEvent) => {
-      if (key.key === "Enter") {
-        if (todo?.content !== "") {
-          const index = todos.findIndex((element) => element.id === todo?.id);
-          const before = todos.slice(0, index);
-          const after = todos.slice(index + 1);
-          const newTodos = [...before, todo, ...after];
-          localStorage.setItem("todos", JSON.stringify(newTodos));
-          setClicked(false);
-        }
-      }
-    },
-    [todo, todos]
-  );
+    }
+  };
 
   return (
     <div className={classes.screen}>
@@ -109,7 +108,7 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
         <div className={classes.edit}>
           <input
             className={classNames("bp4-input .modifier", classes.editInput)}
-            value={editText}
+            value={editedText}
             onChange={(event) => changeText(event.target.value)}
             onKeyUp={(key) => editTodo(key)}
           />

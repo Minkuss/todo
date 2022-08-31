@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import { FC, useCallback, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { TodoService } from "../services/TodoService";
 import { TodoScreen } from "../TodoScreen";
 import { ITodo } from "../types";
@@ -9,7 +9,6 @@ export const TodayScreen: FC = () => {
   const [todos, setTodos] = useState<ITodo[]>([]);
 
   useEffect(() => {
-    console.log("render");
     const data: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
     const todos = data.filter(
       (todo) => todo.type === "today" || todo.type === "important"
@@ -17,11 +16,11 @@ export const TodayScreen: FC = () => {
     setTodos(todos);
   }, []);
 
-  const getValue = useCallback((text: string) => {
+  const getValue = (text: string) => {
     setTodoText(text);
-  }, []);
+  };
 
-  const addTodo = useCallback(() => {
+  const addTodo = () => {
     if (todoText !== "") {
       const obj = {
         content: todoText,
@@ -37,18 +36,15 @@ export const TodayScreen: FC = () => {
 
       TodoService.create(obj);
     }
-  }, [todoText, todos]);
+  };
 
-  const delTodo = useCallback(
-    (id: string) => {
-      const deletedTodo = todos.filter((todo) => todo.id !== id);
+  const delTodo = (id: string) => {
+    const deletedTodo = todos.filter((todo) => todo.id !== id);
 
-      setTodos(deletedTodo);
+    setTodos(deletedTodo);
 
-      TodoService.delete(id);
-    },
-    [todos]
-  );
+    TodoService.delete(id);
+  };
 
   return (
     <TodoScreen
