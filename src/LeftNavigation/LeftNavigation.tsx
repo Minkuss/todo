@@ -29,6 +29,7 @@ export const LeftNavigation: FC = () => {
           {searchedTodos.map((el) => {
             return (
               <div
+                key = {el.id}
                 style={{
                   display: "flex",
                 }}
