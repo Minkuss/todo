@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
 import { LeftNavigation } from "../LeftNavigation";
 import {
   ImportantScreen,
@@ -14,7 +14,7 @@ import * as classes from "./MainScreen.styles";
 export const MainScreen: FC = () => {
   return (
     <div className={classes.main}>
-      <BrowserRouter>
+      <HashRouter>
         <LeftNavigation />
         <Routes>
           <Route path="/" element={<StartScreen />} />
@@ -23,7 +23,7 @@ export const MainScreen: FC = () => {
           <Route path="/planned" element={<PlannedScreen />} />
           <Route path="/shopping-list" element={<ShoppingListScreen />} />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </div>
   );
 };

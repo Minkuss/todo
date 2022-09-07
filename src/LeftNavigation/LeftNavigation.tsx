@@ -11,14 +11,14 @@ export const LeftNavigation: FC = () => {
   const [searchedTodos, setSearchedTodos] = useState<ITodo[]>([]);
   const [users, setUsers] = useState([]);
 
-  useEffect(() => {
-    const apiURL = "https://todo-project.up.railway.app/api/users";
-    axios.get(apiURL).then((resp) => {
-      const allUsers: [] = resp.data;
-      console.log(allUsers);
-      setUsers(allUsers);
-    });
-  }, [setUsers]);
+  // useEffect(() => {
+  //   const apiURL = "https://todo-project.up.railway.app/api/users";
+  //   axios.get(apiURL).then((resp) => {
+  //     const allUsers: [] = resp.data;
+  //     console.log(allUsers);
+  //     setUsers(allUsers);
+  //   });
+  // }, [setUsers]);
 
   const onChange = (text: string) => {
     if (text !== "") {
@@ -104,9 +104,9 @@ export const LeftNavigation: FC = () => {
               </Button>
             )}
           </NavLink>
-          {users.map((el: { name: string }) => (
+          {/* {users.map((el: { name: string }) => (
             <div>{el.name}</div>
-          ))}
+          ))} */}
         </ButtonGroup>
       </Card>
     </>
