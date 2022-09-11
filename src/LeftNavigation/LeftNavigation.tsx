@@ -60,7 +60,7 @@ export const LeftNavigation: FC = () => {
               onChange(event.target.value);
             }}
           />
-          <NavLink className={classes.link} to={"/today"}>
+          <NavLink className={classes.link} to={"/dashboard/today"}>
             {({ isActive }) => (
               <Button
                 intent={isActive ? "primary" : "none"}
@@ -71,7 +71,7 @@ export const LeftNavigation: FC = () => {
               </Button>
             )}
           </NavLink>
-          <NavLink className={classes.link} to={"/important"}>
+          <NavLink className={classes.link} to={"/dashboard/important"}>
             {({ isActive }) => (
               <Button
                 intent={isActive ? "primary" : "none"}
@@ -82,7 +82,7 @@ export const LeftNavigation: FC = () => {
               </Button>
             )}
           </NavLink>
-          <NavLink className={classes.link} to={"/planned"}>
+          <NavLink className={classes.link} to={"/dashboard/planned"}>
             {({ isActive }) => (
               <Button
                 intent={isActive ? "primary" : "none"}
@@ -93,7 +93,7 @@ export const LeftNavigation: FC = () => {
               </Button>
             )}
           </NavLink>
-          <NavLink className={classes.link} to={"/shopping-list"}>
+          <NavLink className={classes.link} to={"/dashboard/shopping-list"}>
             {({ isActive }) => (
               <Button
                 intent={isActive ? "primary" : "none"}

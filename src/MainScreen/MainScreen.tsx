@@ -14,16 +14,15 @@ import * as classes from "./MainScreen.styles";
 export const MainScreen: FC = () => {
   return (
     <div className={classes.main}>
-      <HashRouter>
-        <LeftNavigation />
-        <Routes>
-          <Route path="/" element={<StartScreen />} />
-          <Route path="/today" element={<TodayScreen />} />
-          <Route path="/important" element={<ImportantScreen />} />
-          <Route path="/planned" element={<PlannedScreen />} />
-          <Route path="/shopping-list" element={<ShoppingListScreen />} />
-        </Routes>
-      </HashRouter>
+      {/* <HashRouter> */}
+      <LeftNavigation />
+      <Routes>
+        <Route path="/today" element={<TodayScreen />} />
+        <Route path="/important" element={<ImportantScreen />} />
+        <Route path="/planned" element={<PlannedScreen />} />
+        <Route path="/shopping-list" element={<ShoppingListScreen />} />
+      </Routes>
+      {/* </HashRouter> */}
     </div>
   );
 };
