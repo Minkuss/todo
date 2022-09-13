@@ -1,6 +1,6 @@
 import { Button, Icon, IconName } from "@blueprintjs/core";
 import React, { FC, useEffect, useState } from "react";
-import { ITodo } from "../types";
+import { ITodo } from "../../types";
 import * as classes from "./TodoBlock.styles";
 
 interface ITodoBlock {

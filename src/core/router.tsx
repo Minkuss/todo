@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
-import { LoginForm } from "../Forms";
-import { AuthRouter } from "../Forms/router";
+import { LoginFormPage } from "../FormsPage";
+import { AuthRouter } from "../FormsPage/router";
 import { MainScreen } from "../MainScreen";
 
 export const CoreRouter: FC = () => {
@@ -10,7 +10,7 @@ export const CoreRouter: FC = () => {
       <Routes>
         <Route path="/auth" element={<AuthRouter />} />
         <Route path="/dashboard/*" element={<MainScreen />} />
-        <Route path="*" element={<LoginForm />} />
+        <Route path="*" element={<LoginFormPage />} />
       </Routes>
     </BrowserRouter>
   );

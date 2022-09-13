@@ -2,7 +2,7 @@ import { Drawer } from "@blueprintjs/core";
 import classNames from "classnames";
 import { percent } from "csx";
 import React, { FC, useEffect, useState } from "react";
-import { TodoBlock } from "../components";
+import { TodoBlock } from "../components/TodoBlock/TodoBlock";
 import { ITodo } from "../types";
 import * as classes from "./TodoScreen.styles";
 
