@@ -14,7 +14,6 @@ import * as classes from "./MainScreen.styles";
 export const MainScreen: FC = () => {
   return (
     <div className={classes.main}>
-      {/* <HashRouter> */}
       <LeftNavigation />
       <Routes>
         <Route path="/today" element={<TodayScreen />} />
@@ -22,7 +21,6 @@ export const MainScreen: FC = () => {
         <Route path="/planned" element={<PlannedScreen />} />
         <Route path="/shopping-list" element={<ShoppingListScreen />} />
       </Routes>
-      {/* </HashRouter> */}
     </div>
   );
 };

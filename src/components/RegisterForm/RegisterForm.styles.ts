@@ -8,7 +8,6 @@ const move = keyframes({
 })
 
 export const card = style({
-  // display: 'flex',
   fontSize: px(20),
   background: "#D9D9D9",
   borderRadius: px(30),

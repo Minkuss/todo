@@ -1,8 +1,10 @@
-import { percent, px } from "csx";
-import { style } from "typestyle";
+import { percent, px, translateX } from "csx";
+import { keyframes, style } from "typestyle";
+
 
 export const main = style({
   display: 'flex',
   justifyContent: 'center',
-  alignItems: 'center'
+  alignItems: 'center',
+  flexDirection: 'column'
 })
