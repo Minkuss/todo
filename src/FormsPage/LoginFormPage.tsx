@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import {
   Button,
   ButtonGroup,
@@ -11,26 +11,55 @@ import { useNavigate } from "react-router-dom";
 import * as classes from "./LoginFormPage.styles";
 import { LoginForm } from "../components/LoginForm";
 import { RegisterForm } from "../components/RegisterForm";
+import axios from "axios";
+import { nanoid } from "nanoid";
 
 export const LoginFormPage: FC = () => {
   const navigate = useNavigate();
   const [visible, setVisible] = useState(true);
+  const [apidata, setapiData] = useState([]);
+  const apiURL = "https://retoolapi.dev/xpODyJ/data";
+
+  useEffect(() => {
+    axios.get(apiURL).then((resp) => {
+      const data: [] = resp.data;
+      setapiData(data);
+    });
+  }, []);
 
   const getLoginFormData = (data: { username: string; password: string }) => {
-    if (data.username === "bebra") {
-      navigate("/dashboard");
-      console.log("true");
-    }
+    apidata.map((el: { users: string; password: number }) => {
+      if (
+        el.users === data.username &&
+        el.password.toString() === data.password
+      ) {
+        navigate("/dashboard", { state: { username: el.users } });
+
+        return 0;
+      }
+    });
   };
 
   const getRegisterFormData = (data: {
     username: string;
     password: string;
   }) => {
-    if (data.username === "bebra") {
-      navigate("/dashboard");
-      console.log("true");
-    }
+    // const user = {
+    //   users: data.username,
+    //   password: data.password,
+    //   id: nanoid(),
+    //   todos: [],
+    // };
+    axios
+      .post(apiURL, {
+        users: data.username,
+        password: data.password,
+        todos: [],
+      })
+      .then((res) => {
+        console.log(res);
+        console.log(res.data);
+      });
   };
 
   return (

@@ -4,18 +4,23 @@ import { Button, ButtonGroup, Card } from "@blueprintjs/core";
 
 import * as classes from "./LeftNavigation.styles";
 import classNames from "classnames";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { ITodo } from "../types";
+
+type LocationState = {
+  username: string;
+};
 
 export const LeftNavigation: FC = () => {
   const [searchedTodos, setSearchedTodos] = useState<ITodo[]>([]);
-  const [users, setUsers] = useState([]);
+  // const [users, setUsers] = useState([]);
+  const location = useLocation();
+  const state = location.state as LocationState;
 
   // useEffect(() => {
-  //   const apiURL = "https://todo-project.up.railway.app/api/users";
+  //   const apiURL = "https://retoolapi.dev/xpODyJ/data";
   //   axios.get(apiURL).then((resp) => {
   //     const allUsers: [] = resp.data;
-  //     console.log(allUsers);
   //     setUsers(allUsers);
   //   });
   // }, [setUsers]);
@@ -60,7 +65,11 @@ export const LeftNavigation: FC = () => {
               onChange(event.target.value);
             }}
           />
-          <NavLink className={classes.link} to={"/dashboard/today"}>
+          <NavLink
+            className={classes.link}
+            state={{ username: state.username }}
+            to={"/dashboard/today"}
+          >
             {({ isActive }) => (
               <Button
                 intent={isActive ? "primary" : "none"}
@@ -71,7 +80,11 @@ export const LeftNavigation: FC = () => {
               </Button>
             )}
           </NavLink>
-          <NavLink className={classes.link} to={"/dashboard/important"}>
+          <NavLink
+            className={classes.link}
+            state={{ username: state.username }}
+            to={"/dashboard/important"}
+          >
             {({ isActive }) => (
               <Button
                 intent={isActive ? "primary" : "none"}
@@ -82,7 +95,11 @@ export const LeftNavigation: FC = () => {
               </Button>
             )}
           </NavLink>
-          <NavLink className={classes.link} to={"/dashboard/planned"}>
+          <NavLink
+            className={classes.link}
+            state={{ username: state.username }}
+            to={"/dashboard/planned"}
+          >
             {({ isActive }) => (
               <Button
                 intent={isActive ? "primary" : "none"}
@@ -93,7 +110,11 @@ export const LeftNavigation: FC = () => {
               </Button>
             )}
           </NavLink>
-          <NavLink className={classes.link} to={"/dashboard/shopping-list"}>
+          <NavLink
+            className={classes.link}
+            state={{ username: state.username }}
+            to={"/dashboard/shopping-list"}
+          >
             {({ isActive }) => (
               <Button
                 intent={isActive ? "primary" : "none"}
@@ -104,8 +125,8 @@ export const LeftNavigation: FC = () => {
               </Button>
             )}
           </NavLink>
-          {/* {users.map((el: { name: string }) => (
-            <div>{el.name}</div>
+          {/* {users.map((el: { users: string }) => (
+            <div>{el.users}</div>
           ))} */}
         </ButtonGroup>
       </Card>
