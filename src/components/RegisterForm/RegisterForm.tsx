@@ -12,10 +12,11 @@ export interface IRegisterForm {
 
 export interface IRegisterFormPage {
   onSubmit: (value: { username: string; password: string }) => unknown;
+  match: boolean;
 }
 
 export const RegisterForm: FC<IRegisterFormPage> = (props) => {
-  const { onSubmit }: IRegisterFormPage = {
+  const { onSubmit, match }: IRegisterFormPage = {
     ...defaultProps,
     ...props,
   };
@@ -45,10 +46,12 @@ export const RegisterForm: FC<IRegisterFormPage> = (props) => {
                 value: true,
                 message: "Please enter your email or nickname",
               },
+              // validate: (value) => validateUsername(value, match),
             })}
             placeholder="best@gmail.com"
             className={classNames("bp4-input .modifier", classes.input)}
           />
+          {match ? <span>bebra</span> : null}
         </FormGroup>
         <FormGroup
           helperText={errors.password?.message}
@@ -75,6 +78,14 @@ export const RegisterForm: FC<IRegisterFormPage> = (props) => {
   );
 };
 
+function validateUsername(username: string, match: boolean): ValidateResult {
+  if (match === false) {
+    return undefined;
+  }
+  return "Account with this username is already exists";
+}
+
 const defaultProps: Required<IRegisterFormPage> = {
   onSubmit: () => {},
+  match: false,
 };

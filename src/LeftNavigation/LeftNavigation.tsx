@@ -9,21 +9,13 @@ import { ITodo } from "../types";
 
 type LocationState = {
   username: string;
+  todos: ITodo[];
 };
 
 export const LeftNavigation: FC = () => {
   const [searchedTodos, setSearchedTodos] = useState<ITodo[]>([]);
-  // const [users, setUsers] = useState([]);
   const location = useLocation();
   const state = location.state as LocationState;
-
-  // useEffect(() => {
-  //   const apiURL = "https://retoolapi.dev/xpODyJ/data";
-  //   axios.get(apiURL).then((resp) => {
-  //     const allUsers: [] = resp.data;
-  //     setUsers(allUsers);
-  //   });
-  // }, [setUsers]);
 
   const onChange = (text: string) => {
     if (text !== "") {
@@ -41,6 +33,7 @@ export const LeftNavigation: FC = () => {
   return (
     <>
       <Card className={classes.card}>
+        <h3>{state.username}</h3>
         <div>
           {searchedTodos.map((el) => {
             return (

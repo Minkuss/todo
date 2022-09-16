@@ -32,9 +32,9 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
   const [todo, setTodo] = useState<ITodo>();
   const [editedText, setedEditText] = useState("");
 
-  useEffect(() => {
-    console.log("screen");
-  }, [onClick]);
+  // useEffect(() => {
+  //   console.log("screen");
+  // }, [onClick]);
 
   const showEditBlock = (id: string) => {
     setClicked(true);

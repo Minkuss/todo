@@ -13,12 +13,14 @@ import { LoginForm } from "../components/LoginForm";
 import { RegisterForm } from "../components/RegisterForm";
 import axios from "axios";
 import { nanoid } from "nanoid";
+import { IApiData, ITodo } from "../types";
+import { apiURL } from "../urls";
 
 export const LoginFormPage: FC = () => {
   const navigate = useNavigate();
   const [visible, setVisible] = useState(true);
-  const [apidata, setapiData] = useState([]);
-  const apiURL = "https://retoolapi.dev/xpODyJ/data";
+  const [apidata, setapiData] = useState<IApiData[]>([]);
+  const [match, setMacth] = useState(false);
 
   useEffect(() => {
     axios.get(apiURL).then((resp) => {
@@ -28,12 +30,11 @@ export const LoginFormPage: FC = () => {
   }, []);
 
   const getLoginFormData = (data: { username: string; password: string }) => {
-    apidata.map((el: { users: string; password: number }) => {
-      if (
-        el.users === data.username &&
-        el.password.toString() === data.password
-      ) {
-        navigate("/dashboard", { state: { username: el.users } });
+    apidata.map((el: { users: string; password: string; todos: ITodo[] }) => {
+      if (el.users === data.username && el.password === data.password) {
+        navigate("/dashboard", {
+          state: { username: el.users },
+        });
 
         return 0;
       }
@@ -44,22 +45,25 @@ export const LoginFormPage: FC = () => {
     username: string;
     password: string;
   }) => {
-    // const user = {
-    //   users: data.username,
-    //   password: data.password,
-    //   id: nanoid(),
-    //   todos: [],
-    // };
-    axios
-      .post(apiURL, {
-        users: data.username,
-        password: data.password,
-        todos: [],
-      })
-      .then((res) => {
-        console.log(res);
-        console.log(res.data);
-      });
+    let flag = apidata.find(
+      (el: { users: string; password: string }) => el.users === data.username // проверка на одинаковые emails
+    );
+    if (flag === undefined) {
+      axios
+        .post(apiURL, {
+          users: data.username,
+          password: data.password,
+          todos: [],
+        })
+        .then((res) => {
+          console.log(res);
+          console.log(res.data);
+        });
+      setMacth(false);
+      navigate("/dashboard", { state: { username: data.username } });
+    } else {
+      setMacth(!match);
+    }
   };
 
   return (
@@ -72,7 +76,10 @@ export const LoginFormPage: FC = () => {
       {visible ? (
         <LoginForm onSubmit={(data) => getLoginFormData(data)} />
       ) : (
-        <RegisterForm onSubmit={(data) => getRegisterFormData(data)} />
+        <RegisterForm
+          match={match}
+          onSubmit={(data) => getRegisterFormData(data)}
+        />
       )}
       {/* </div> */}
     </div>
