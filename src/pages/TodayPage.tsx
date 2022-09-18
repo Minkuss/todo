@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 import { TodoService } from "../services/TodoService";
 import { TodoScreen } from "../TodoScreen";
 import { IApiData, ITodo } from "../types";
-import { apiURL } from "../urls";
+import { apiUrl } from "../urls";
 
 type LocationState = {
   username: string;
@@ -23,7 +23,7 @@ export const TodayScreen: FC = () => {
   const element = apidata.find((el) => el.users === state.username);
 
   const getData = async () => {
-    await axios.get(apiURL).then((resp) => {
+    await axios.get(apiUrl).then((resp) => {
       const data: IApiData[] = resp.data;
       const element = data.find((el) => el.users === state.username);
       setTodos(
@@ -43,7 +43,6 @@ export const TodayScreen: FC = () => {
     //   (todo) => todo.type === "today" || todo.type === "important"
     // );
     // setTodos(todos);
-    console.log("get");
 
     getData();
   }, []);

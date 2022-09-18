@@ -1,1 +1,1 @@
-export const apiURL = "https://retoolapi.dev/xpODyJ/data";
+export const apiUrl = "https://todo-project.up.railway.app/api";

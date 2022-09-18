@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { Button, Card, FormGroup, InputGroup } from "@blueprintjs/core";
 import { SubmitHandler, useForm, ValidateResult } from "react-hook-form";
 
@@ -46,12 +46,12 @@ export const RegisterForm: FC<IRegisterFormPage> = (props) => {
                 value: true,
                 message: "Please enter your email or nickname",
               },
-              // validate: (value) => validateUsername(value, match),
+              validate: (value) => validateUsername(value, match),
             })}
             placeholder="best@gmail.com"
             className={classNames("bp4-input .modifier", classes.input)}
           />
-          {match ? <span>bebra</span> : null}
+          {/* {match ? <span>bebra</span> : null} */}
         </FormGroup>
         <FormGroup
           helperText={errors.password?.message}
@@ -79,10 +79,18 @@ export const RegisterForm: FC<IRegisterFormPage> = (props) => {
 };
 
 function validateUsername(username: string, match: boolean): ValidateResult {
-  if (match === false) {
+  let valText = "";
+
+  if (username.includes(" ")) {
+    valText = "Invalid format for login";
+  } else {
+    valText = "This account name is already exists";
+  }
+
+  if (match === false && username !== "2") {
     return undefined;
   }
-  return "Account with this username is already exists";
+  return valText;
 }
 
 const defaultProps: Required<IRegisterFormPage> = {
