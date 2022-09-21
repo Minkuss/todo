@@ -38,13 +38,13 @@ export const TodayScreen: FC = () => {
   };
 
   useEffect(() => {
-    // const data: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
-    // const todos = data.filter(
-    //   (todo) => todo.type === "today" || todo.type === "important"
-    // );
-    // setTodos(todos);
+    const data: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
+    const todos = data.filter(
+      (todo) => todo.type === "today" || todo.type === "important"
+    );
+    setTodos(todos);
 
-    getData();
+    // getData();
   }, []);
 
   const getValue = (text: string) => {
@@ -65,7 +65,7 @@ export const TodayScreen: FC = () => {
       setTodos(newTodo);
       setTodoText("");
 
-      // TodoService.create(obj);
+      TodoService.create(obj);
 
       if (element) {
         element.todos.push(obj);

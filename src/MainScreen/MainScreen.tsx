@@ -7,6 +7,7 @@ import {
   ShoppingListScreen,
   StartScreen,
   TodayScreen,
+  SearchPage,
 } from "../pages";
 
 import * as classes from "./MainScreen.styles";
@@ -20,6 +21,7 @@ export const MainScreen: FC = () => {
         <Route path="/important" element={<ImportantScreen />} />
         <Route path="/planned" element={<PlannedScreen />} />
         <Route path="/shopping-list" element={<ShoppingListScreen />} />
+        <Route path="/searched" element={<SearchPage />} />
       </Routes>
     </div>
   );

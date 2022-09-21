@@ -3,6 +3,7 @@ import classNames from "classnames";
 import { percent } from "csx";
 import React, { FC, useEffect, useState } from "react";
 import { TodoBlock } from "../components/TodoBlock/TodoBlock";
+import { TodoService } from "../services/TodoService";
 import { ITodo } from "../types";
 import * as classes from "./TodoScreen.styles";
 
@@ -31,10 +32,11 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
   const [clicked, setClicked] = useState(false);
   const [todo, setTodo] = useState<ITodo>();
   const [editedText, setedEditText] = useState("");
+  const [todoz, setTodoz] = useState<ITodo[]>([]);
 
-  // useEffect(() => {
-  //   console.log("screen");
-  // }, [onClick]);
+  useEffect(() => {
+    setTodoz(todos);
+  }, [todos]);
 
   const showEditBlock = (id: string) => {
     setClicked(true);
@@ -69,15 +71,26 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
     }
   };
 
+  const delTodo = (id: string) => {
+    const deletedTodo = todos.filter((todo) => todo.id !== id);
+
+    setTodoz(deletedTodo);
+
+    TodoService.delete(id);
+  };
+
   return (
     <div className={classes.screen}>
       <div className={classes.main}>
         <p className={classes.h1}>{name}</p>
         <div className={classes.grow}>
-          {todos.map((todo) => (
+          {todoz.map((todo) => (
             <TodoBlock
               name={name}
-              onClick={() => onClick(todo.id)}
+              onClick={() => {
+                onClick(todo.id);
+                delTodo(todo.id);
+              }}
               key={todo.id}
               text={todo.content}
               id={todo.id}
@@ -85,16 +98,18 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
             />
           ))}
         </div>
-        <div className={classes.inputBlock}>
-          <input
-            value={todoText}
-            onKeyUp={(key) => onKeyUp(key)}
-            onChange={(event) => onChange(event.target.value)}
-            placeholder="What should be done"
-            type="text"
-            className={classNames("bp4-input .modifier", classes.inputTodo)}
-          />
-        </div>
+        {name !== "Searched" ? (
+          <div className={classes.inputBlock}>
+            <input
+              value={todoText}
+              onKeyUp={(key) => onKeyUp(key)}
+              onChange={(event) => onChange(event.target.value)}
+              placeholder="What should be done"
+              type="text"
+              className={classNames("bp4-input .modifier", classes.inputTodo)}
+            />
+          </div>
+        ) : null}
       </div>
       <Drawer
         onClose={() => {

@@ -35,30 +35,31 @@ export const LoginFormPage: FC = () => {
     //   }
     // });
 
-    axios
-      .post(apiUrl + "/users/login", {
-        username: data.username,
-        password: data.password,
-      })
-      .then((resp) => {
-        console.log(resp);
-        console.log(resp.data);
-        sessionStorage.setItem("token", JSON.stringify(resp.data.token));
-      });
-    let token = sessionStorage.getItem("token");
-    if (token) {
-      axios
-        .get(apiUrl + "/users", {
-          headers: {
-            Authorization: JSON.parse(token),
-          },
-        })
-        .then((resp) => {
-          const data: [] = resp.data;
-          setapiData(data);
-          console.log(data);
-        });
-    }
+    // axios
+    //   .post(apiUrl + "/users/login", {
+    //     username: data.username,
+    //     password: data.password,
+    //   })
+    //   .then((resp) => {
+    //     console.log(resp);
+    //     console.log(resp.data);
+    //     sessionStorage.setItem("token", JSON.stringify(resp.data.token));
+    //   });
+    // let token = sessionStorage.getItem("token");
+    // if (token) {
+    //   axios
+    //     .get(apiUrl + "/users", {
+    //       headers: {
+    //         Authorization: JSON.parse(token),
+    //       },
+    //     })
+    //     .then((resp) => {
+    //       const data: [] = resp.data;
+    //       setapiData(data);
+    //       console.log(data);
+    //     });
+    // }
+    navigate("/dashboard");
   };
 
   const getRegisterFormData = (data: {
@@ -84,15 +85,15 @@ export const LoginFormPage: FC = () => {
     // } else {
     //   setMatch(!match);
     // }
-    axios
-      .post(apiUrl + "/users/signup", {
-        username: data.username,
-        password: data.password,
-      })
-      .then((resp) => {
-        console.log(resp);
-        console.log(resp.data);
-      });
+    // axios
+    //   .post(apiUrl + "/users/signup", {
+    //     username: data.username,
+    //     password: data.password,
+    //   })
+    //   .then((resp) => {
+    //     console.log(resp);
+    //     console.log(resp.data);
+    //   });
   };
 
   return (

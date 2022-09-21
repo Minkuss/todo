@@ -4,8 +4,9 @@ import { Button, ButtonGroup, Card } from "@blueprintjs/core";
 
 import * as classes from "./LeftNavigation.styles";
 import classNames from "classnames";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { ITodo } from "../types";
+import { SearchedElementBlock } from "../components/SearchedElementBlock";
 
 type LocationState = {
   username: string;
@@ -13,41 +14,27 @@ type LocationState = {
 };
 
 export const LeftNavigation: FC = () => {
-  const [searchedTodos, setSearchedTodos] = useState<ITodo[]>([]);
   const location = useLocation();
+  const navigate = useNavigate();
   const state = location.state as LocationState;
 
   const onChange = (text: string) => {
-    if (text !== "") {
-      const todos: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
-      setSearchedTodos(
-        todos.filter((todo) =>
-          todo.content.toLowerCase().includes(text.toLowerCase())
-        )
-      );
-    } else {
-      setSearchedTodos([]);
+    const todos: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
+    if (text !== "" && todos !== undefined) {
+      navigate("/dashboard/searched", {
+        state: {
+          todos: todos.filter((todo) =>
+            todo.content.toLowerCase().includes(text.toLowerCase())
+          ),
+        },
+      });
     }
   };
 
   return (
     <>
       <Card className={classes.card}>
-        <h3>{state.username}</h3>
-        <div>
-          {searchedTodos.map((el) => {
-            return (
-              <div
-                key={el.id}
-                style={{
-                  display: "flex",
-                }}
-              >
-                <span>{el.content}</span>
-              </div>
-            );
-          })}
-        </div>
+        {/* <h3>{state.username}</h3> */}
         <ButtonGroup className={classes.btn_group} alignText="left" minimal>
           <input
             type="text"
@@ -60,7 +47,7 @@ export const LeftNavigation: FC = () => {
           />
           <NavLink
             className={classes.link}
-            state={{ username: state.username }}
+            // state={{ username: state.username }}
             to={"/dashboard/today"}
           >
             {({ isActive }) => (
@@ -75,7 +62,7 @@ export const LeftNavigation: FC = () => {
           </NavLink>
           <NavLink
             className={classes.link}
-            state={{ username: state.username }}
+            // state={{ username: state.username }}
             to={"/dashboard/important"}
           >
             {({ isActive }) => (
@@ -90,7 +77,7 @@ export const LeftNavigation: FC = () => {
           </NavLink>
           <NavLink
             className={classes.link}
-            state={{ username: state.username }}
+            // state={{ username: state.username }}
             to={"/dashboard/planned"}
           >
             {({ isActive }) => (
@@ -105,7 +92,7 @@ export const LeftNavigation: FC = () => {
           </NavLink>
           <NavLink
             className={classes.link}
-            state={{ username: state.username }}
+            // state={{ username: state.username }}
             to={"/dashboard/shopping-list"}
           >
             {({ isActive }) => (
