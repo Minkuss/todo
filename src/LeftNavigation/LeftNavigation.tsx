@@ -6,7 +6,6 @@ import * as classes from "./LeftNavigation.styles";
 import classNames from "classnames";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { ITodo } from "../types";
-import { SearchedElementBlock } from "../components/SearchedElementBlock";
 
 type LocationState = {
   username: string;

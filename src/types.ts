@@ -4,6 +4,7 @@ export interface ITodo {
   type: string;
   important: boolean;
   id: string;
+  additionalTodos?: IAdditionalTodo[];
 };
 
 export type IApiData = {
@@ -12,3 +13,10 @@ export type IApiData = {
   id?: number;
   todos: ITodo[];
 };
+
+export interface IAdditionalTodo {
+  content: string;
+  status?: string;
+  type: string;
+  id: string;
+}

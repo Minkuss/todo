@@ -5,53 +5,5 @@ import { TodoScreen } from "../TodoScreen";
 import { ITodo } from "../types";
 
 export const ShoppingListScreen: FC = () => {
-  const [todoText, setTodoText] = useState("");
-  const [todos, setTodos] = useState<ITodo[]>([]);
-
-  useEffect(() => {
-    const data: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
-    const todos = data.filter((todo) => todo.type === "shoppingList");
-    setTodos(todos);
-  }, []);
-
-  const getValue = (text: string) => {
-    setTodoText(text);
-  };
-
-  const addTodo = () => {
-    if (todoText !== "") {
-      const obj = {
-        content: todoText,
-        type: "shoppingList",
-        id: nanoid(),
-        important: false,
-      };
-
-      const newTodo: ITodo[] = [...todos, obj];
-
-      setTodos(newTodo);
-      setTodoText("");
-
-      TodoService.create(obj);
-    }
-  };
-
-  const delTodo = (id: string) => {
-    const deletedTodo = todos.filter((todo) => todo.id !== id);
-
-    setTodos(deletedTodo);
-
-    TodoService.delete(id);
-  };
-
-  return (
-    <TodoScreen
-      onClick={(id) => delTodo(id)}
-      todos={todos}
-      onKeyUp={(key) => (key.key === "Enter" ? addTodo() : null)}
-      todoText={todoText}
-      onChange={(text) => getValue(text)}
-      name="Shopping List"
-    />
-  );
+  return <TodoScreen name="Shopping List" />;
 };

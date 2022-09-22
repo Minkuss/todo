@@ -1,7 +1,8 @@
-import { Drawer } from "@blueprintjs/core";
+import { Button, Drawer } from "@blueprintjs/core";
 import classNames from "classnames";
 import { percent } from "csx";
-import React, { FC, useEffect, useState } from "react";
+import { nanoid } from "nanoid";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import { TodoBlock } from "../components/TodoBlock/TodoBlock";
 import { TodoService } from "../services/TodoService";
 import { ITodo } from "../types";
@@ -9,7 +10,7 @@ import * as classes from "./TodoScreen.styles";
 
 interface ITodoScreenProps {
   name: string;
-  todos?: ITodo[];
+  seacrhedTodos?: ITodo[];
   onKeyUp?: (value: React.KeyboardEvent) => unknown;
   onChange?: (value: string) => unknown;
   todoText?: string;
@@ -17,32 +18,45 @@ interface ITodoScreenProps {
 }
 
 export const TodoScreen: FC<ITodoScreenProps> = (props) => {
-  const {
-    name,
-    todos,
-    onKeyUp,
-    onChange,
-    todoText,
-    onClick,
-  }: ITodoScreenProps = {
+  const { name, seacrhedTodos, onClick }: ITodoScreenProps = {
     ...defaultProps,
     ...props,
   };
 
   const [clicked, setClicked] = useState(false);
   const [todo, setTodo] = useState<ITodo>();
-  const [editedText, setedEditText] = useState("");
+  const [editedText, setEditedText] = useState("");
   const [todoz, setTodoz] = useState<ITodo[]>([]);
+  const [todozText, setTodozText] = useState("");
 
   useEffect(() => {
-    setTodoz(todos);
-  }, [todos]);
+    if (name.toLowerCase() === "today") {
+      const data: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
+      const todos = data.filter(
+        (todo) => todo.type === "today" || todo.type === "important"
+      );
+      setTodoz(todos);
+    } else if (name === "Searched") {
+      setTodoz(seacrhedTodos);
+    } else if (name === "Shopping List") {
+      const data: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
+      const todos = data.filter((todo) => todo.type === "shoppingList");
+      setTodoz(todos);
+    } else if (name === "Important") {
+      const todayData = localStorage.getItem("todos") || "[]";
+      const data2: ITodo[] = JSON.parse(todayData);
+      const signedTodos = data2.filter((todo) => todo.important === true);
+      setTodoz(signedTodos);
+    }
+
+    // getData();
+  }, [name, seacrhedTodos]);
 
   const showEditBlock = (id: string) => {
     setClicked(true);
-    setTodo(todos.find((element) => element.id === id));
-    const todoLocal = todos.find((element) => element.id === id);
-    setedEditText(todoLocal?.content || "");
+    setTodo(todoz.find((element) => element.id === id));
+    const todoLocal = todoz.find((element) => element.id === id);
+    setEditedText(todoLocal?.content || "");
   };
 
   const changeText = (text: string) => {
@@ -50,7 +64,7 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
       todo.content = text;
       setTodo(todo);
     }
-    setedEditText(text);
+    setEditedText(text);
   };
 
   const editTodo = (key: React.KeyboardEvent) => {
@@ -71,8 +85,44 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
     }
   };
 
+  const getValue = (text: string) => {
+    setTodozText(text);
+  };
+
+  const addTodo = useCallback(() => {
+    if (todozText !== "") {
+      const obj = {
+        content: todozText,
+        type: name === "Shopping List" ? "shoppingList" : name.toLowerCase(),
+        id: nanoid(),
+        important: false,
+      };
+
+      const newTodo: ITodo[] = [...todoz, obj];
+
+      setTodoz(newTodo);
+      setTodozText("");
+
+      TodoService.create(obj);
+
+      // if (element) {
+      //   element.todos.push(obj);
+      //   axios
+      //     .put(`https://retoolapi.dev/xpODyJ/data/${element.id}`, {
+      //       users: element.users,
+      //       password: element.password,
+      //       todos: element.todos,
+      //     })
+      //     .then((res) => {
+      //       console.log(res);
+      //       console.log(res.data);
+      //     });
+      // }
+    }
+  }, [todozText, name, todoz]);
+
   const delTodo = (id: string) => {
-    const deletedTodo = todos.filter((todo) => todo.id !== id);
+    const deletedTodo = todoz.filter((todo) => todo.id !== id);
 
     setTodoz(deletedTodo);
 
@@ -101,9 +151,11 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
         {name !== "Searched" ? (
           <div className={classes.inputBlock}>
             <input
-              value={todoText}
-              onKeyUp={(key) => onKeyUp(key)}
-              onChange={(event) => onChange(event.target.value)}
+              value={todozText}
+              // onKeyUp={(key) => onKeyUp(key)}
+              onKeyUp={(key) => (key.key === "Enter" ? addTodo() : null)}
+              // onChange={(event) => onChange(event.target.value)}
+              onChange={(event) => getValue(event.target.value)}
               placeholder="What should be done"
               type="text"
               className={classNames("bp4-input .modifier", classes.inputTodo)}
@@ -127,6 +179,11 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
             onChange={(event) => changeText(event.target.value)}
             onKeyUp={(key) => editTodo(key)}
           />
+          <Button
+            className={classes.additionalButton}
+            minimal
+            text="Add additional todo"
+          />
         </div>
       </Drawer>
     </div>
@@ -135,7 +192,7 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
 
 const defaultProps: Required<ITodoScreenProps> = {
   name: "",
-  todos: [],
+  seacrhedTodos: [],
   onChange: () => {},
   onKeyUp: () => {},
   todoText: "",

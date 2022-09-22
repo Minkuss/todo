@@ -56,6 +56,9 @@ export const screen = style({
 export const edit = style({
   // backgroundColor: '#D9D9D9',
   width: percent(100),
+  display: "flex",
+  alignItems: "center",
+  flexDirection: "column"
 })
 
 export const editInput = style({
@@ -63,9 +66,10 @@ export const editInput = style({
   fontSize: px(20),
   height: px(50),
   boxShadow: 'none',
-  width: percent(100),
+  width: percent(95),
   paddingLeft: px(18),
   borderRadius: px(14),
+  marginTop: percent(5),
   "$nest": {
     "&::placeholder": {
       fontSize: px(15),
@@ -75,4 +79,11 @@ export const editInput = style({
       boxShadow: 'none'
     }
   }
+})
+
+export const additionalButton = style({
+  alignSelf: "start",
+  marginLeft: percent(2.5),
+  marginTop: px(5),
+  borderRadius: px(10),
 })

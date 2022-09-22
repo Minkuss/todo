@@ -1,6 +1,5 @@
 import { FC } from "react";
 import { useLocation } from "react-router-dom";
-import { SearchedElementBlock } from "../components/SearchedElementBlock";
 import { TodoScreen } from "../TodoScreen";
 import { ITodo } from "../types";
 
@@ -12,5 +11,5 @@ export const SearchPage: FC = () => {
   const location = useLocation();
   const state = location.state as LocationState;
 
-  return <TodoScreen todos={state.todos} name="Searched" />;
+  return <TodoScreen seacrhedTodos={state.todos} name="Searched" />;
 };
