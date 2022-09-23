@@ -35,65 +35,64 @@ export const LoginFormPage: FC = () => {
     //   }
     // });
 
-    // axios
-    //   .post(apiUrl + "/users/login", {
-    //     username: data.username,
-    //     password: data.password,
-    //   })
-    //   .then((resp) => {
-    //     console.log(resp);
-    //     console.log(resp.data);
-    //     sessionStorage.setItem("token", JSON.stringify(resp.data.token));
-    //   });
-    // let token = sessionStorage.getItem("token");
-    // if (token) {
-    //   axios
-    //     .get(apiUrl + "/users", {
-    //       headers: {
-    //         Authorization: JSON.parse(token),
-    //       },
-    //     })
-    //     .then((resp) => {
-    //       const data: [] = resp.data;
-    //       setapiData(data);
-    //       console.log(data);
-    //     });
-    // }
-    navigate("/dashboard");
+    axios
+      .post(apiUrl + "/users/login", {
+        username: data.username,
+        password: data.password,
+      })
+      .then((resp) => {
+        console.log(resp);
+        console.log(resp.data);
+        sessionStorage.setItem("token", JSON.stringify(resp.data.token));
+        navigate("/dashboard", { state: { username: data.username } });
+      });
+    let token = sessionStorage.getItem("token");
+    if (token) {
+      axios
+        .get(apiUrl + "/users", {
+          headers: {
+            Authorization: JSON.parse(token),
+          },
+        })
+        .then((resp) => {
+          const data: [] = resp.data;
+          setapiData(data);
+        });
+    }
   };
 
   const getRegisterFormData = (data: {
     username: string;
     password: string;
   }) => {
-    // let flag = apidata.find(
-    //   (el: { users: string; password: string }) => el.users === data.username // проверка на одинаковые emails
-    // );
-    // if (flag === undefined) {
-    //   axios
-    //     .post(apiURL, {
-    //       users: data.username,
-    //       password: data.password,
-    //       todos: [],
-    //     })
-    //     .then((res) => {
-    //       console.log(res);
-    //       console.log(res.data);
-    //     });
-    //   setMatch(false);
-    //   navigate("/dashboard", { state: { username: data.username } });
-    // } else {
-    //   setMatch(!match);
-    // }
-    // axios
-    //   .post(apiUrl + "/users/signup", {
-    //     username: data.username,
-    //     password: data.password,
-    //   })
-    //   .then((resp) => {
-    //     console.log(resp);
-    //     console.log(resp.data);
-    //   });
+    let flag = apidata.find(
+      (el: { users: string; password: string }) => el.users === data.username // проверка на одинаковые emails
+    );
+    if (flag === undefined) {
+      axios
+        .post(apiUrl, {
+          users: data.username,
+          password: data.password,
+          todos: [],
+        })
+        .then((res) => {
+          console.log(res);
+          console.log(res.data);
+        });
+      setMatch(false);
+      navigate("/dashboard", { state: { username: data.username } });
+    } else {
+      setMatch(!match);
+    }
+    axios
+      .post(apiUrl + "/users/signup", {
+        username: data.username,
+        password: data.password,
+      })
+      .then((resp) => {
+        console.log(resp);
+        console.log(resp.data);
+      });
   };
 
   return (

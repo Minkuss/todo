@@ -1,1 +1,1 @@
-export const apiUrl = "https://todo-project.up.railway.app/api";
+export const apiUrl = "https://motionless-lime-sockeye.cyclic.app/api";

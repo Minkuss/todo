@@ -33,7 +33,7 @@ export const LeftNavigation: FC = () => {
   return (
     <>
       <Card className={classes.card}>
-        {/* <h3>{state.username}</h3> */}
+        <h3>{state.username}</h3>
         <ButtonGroup className={classes.btn_group} alignText="left" minimal>
           <input
             type="text"
@@ -46,7 +46,7 @@ export const LeftNavigation: FC = () => {
           />
           <NavLink
             className={classes.link}
-            // state={{ username: state.username }}
+            state={{ username: state.username }}
             to={"/dashboard/today"}
           >
             {({ isActive }) => (
@@ -61,7 +61,7 @@ export const LeftNavigation: FC = () => {
           </NavLink>
           <NavLink
             className={classes.link}
-            // state={{ username: state.username }}
+            state={{ username: state.username }}
             to={"/dashboard/important"}
           >
             {({ isActive }) => (
@@ -76,7 +76,7 @@ export const LeftNavigation: FC = () => {
           </NavLink>
           <NavLink
             className={classes.link}
-            // state={{ username: state.username }}
+            state={{ username: state.username }}
             to={"/dashboard/planned"}
           >
             {({ isActive }) => (
@@ -91,7 +91,7 @@ export const LeftNavigation: FC = () => {
           </NavLink>
           <NavLink
             className={classes.link}
-            // state={{ username: state.username }}
+            state={{ username: state.username }}
             to={"/dashboard/shopping-list"}
           >
             {({ isActive }) => (
@@ -104,9 +104,6 @@ export const LeftNavigation: FC = () => {
               </Button>
             )}
           </NavLink>
-          {/* {users.map((el: { users: string }) => (
-            <div>{el.users}</div>
-          ))} */}
         </ButtonGroup>
       </Card>
     </>
