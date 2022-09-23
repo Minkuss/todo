@@ -1,6 +1,6 @@
 import { center } from "csstips";
-import { percent, px } from "csx";
-import { style } from "typestyle";
+import { percent, px, transform } from "csx";
+import { keyframes, style } from "typestyle";
 
 export const h1 = style({
   color: "rgba(0, 0, 0, 0.29)",
@@ -76,7 +76,7 @@ export const editInput = style({
       color: "rgba(0, 0, 0, 0.29)",
     },
     "&:focus": {
-      boxShadow: 'none'
+      boxShadow: 'none',
     }
   }
 })
@@ -86,4 +86,25 @@ export const additionalButton = style({
   marginLeft: percent(2.5),
   marginTop: px(5),
   borderRadius: px(10),
+})
+
+export const additionalInput = style({
+  boxShadow: "none",
+  border: "none",
+  background: "#D9D9D9",
+  width: percent(90),
+  height: percent(100),
+  "$nest": {
+    "&::placeholder": {
+      fontSize: px(15),
+      color: "rgba(0, 0, 0, 1)"
+    },
+    "&:focus::placeholder": {
+      color: "rgba(0, 0, 0, 0)",
+    },
+    "&:focus": {
+      boxShadow: 'none',
+
+    }
+  }
 })

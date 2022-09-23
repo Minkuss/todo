@@ -1,8 +1,9 @@
-import { Button, Drawer } from "@blueprintjs/core";
+import React, { FC, useCallback, useEffect, useState } from "react";
+import { Button, Drawer, Icon, InputGroup } from "@blueprintjs/core";
 import classNames from "classnames";
 import { percent } from "csx";
 import { nanoid } from "nanoid";
-import React, { FC, useCallback, useEffect, useState } from "react";
+
 import { TodoBlock } from "../components/TodoBlock/TodoBlock";
 import { TodoService } from "../services/TodoService";
 import { ITodo } from "../types";
@@ -24,10 +25,18 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
   };
 
   const [clicked, setClicked] = useState(false);
+
   const [todo, setTodo] = useState<ITodo>();
+
   const [editedText, setEditedText] = useState("");
+
   const [todoz, setTodoz] = useState<ITodo[]>([]);
+
   const [todozText, setTodozText] = useState("");
+
+  const [focus, setFocus] = useState(false);
+
+  const [additionalTodoText, setAdditionalTodoText] = useState("");
 
   useEffect(() => {
     if (name.toLowerCase() === "today") {
@@ -129,6 +138,10 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
     TodoService.delete(id);
   };
 
+  const getAdditionalText = (text: string) => {
+    setAdditionalTodoText(text);
+  };
+
   return (
     <div className={classes.screen}>
       <div className={classes.main}>
@@ -179,11 +192,23 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
             onChange={(event) => changeText(event.target.value)}
             onKeyUp={(key) => editTodo(key)}
           />
-          <Button
-            className={classes.additionalButton}
-            minimal
-            text="Add additional todo"
-          />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              width: percent(90),
+            }}
+            className={classes.editInput}
+          >
+            <Icon icon={focus ? "circle" : "plus"} />
+            <input
+              className={classNames("bp4-input", classes.additionalInput)}
+              placeholder="Add additional task"
+              onFocus={() => setFocus(true)}
+              onBlur={() => setFocus(false)}
+              onChange={(event) => getAdditionalText(event.target.value)}
+            />
+          </div>
         </div>
       </Drawer>
     </div>
