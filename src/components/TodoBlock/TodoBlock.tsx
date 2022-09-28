@@ -67,7 +67,7 @@ export const TodoBlock: FC<ITodoBlock> = (props) => {
           }
         }}
       />
-      {props.name !== "Shopping List" ? (
+      {props.name !== "Shopping List" && props.name !== "additional" ? (
         <Button
           onClick={() => {
             // if (props.name !== "Important") {

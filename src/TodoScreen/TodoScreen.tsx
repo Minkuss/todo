@@ -6,7 +6,7 @@ import { nanoid } from "nanoid";
 
 import { TodoBlock } from "../components/TodoBlock/TodoBlock";
 import { TodoService } from "../services/TodoService";
-import { ITodo } from "../types";
+import { IAdditionalTodo, ITodo } from "../types";
 import * as classes from "./TodoScreen.styles";
 
 interface ITodoScreenProps {
@@ -38,6 +38,8 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
 
   const [additionalTodoText, setAdditionalTodoText] = useState("");
 
+  const [additionalTodos, setAdditionalTodos] = useState<IAdditionalTodo[]>([]);
+
   useEffect(() => {
     if (name.toLowerCase() === "today") {
       const data: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
@@ -58,8 +60,18 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
       setTodoz(signedTodos);
     }
 
+    const todosLocal: ITodo[] = JSON.parse(
+      localStorage.getItem("todos") || "[]"
+    );
+
+    todosLocal.map((todoLoc) => {
+      if (todoLoc.id === todo?.id) {
+        setAdditionalTodos(todoLoc.additionalTodos || []);
+      }
+    });
+
     // getData();
-  }, [name, seacrhedTodos]);
+  }, [name, seacrhedTodos, todo?.id]);
 
   const showEditBlock = (id: string) => {
     setClicked(true);
@@ -142,6 +154,39 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
     setAdditionalTodoText(text);
   };
 
+  const addAdditionalTodo = useCallback(() => {
+    if (additionalTodoText !== "") {
+      const obj = {
+        content: additionalTodoText,
+        id: nanoid(),
+      };
+      if (todo?.additionalTodos !== undefined) {
+        const newAdditioalTodo: IAdditionalTodo[] = [
+          ...todo?.additionalTodos,
+          obj,
+        ];
+        todoz.map((todoLocal) => {
+          if (todoLocal.id === todo.id) {
+            todoLocal.additionalTodos = newAdditioalTodo;
+          }
+        });
+        localStorage.setItem("todos", JSON.stringify(todoz));
+        setAdditionalTodos(newAdditioalTodo);
+      } else {
+        if (todo !== undefined) {
+          const newAdditioalTodo: IAdditionalTodo[] = [obj];
+          todoz.map((todoLocal) => {
+            if (todoLocal.id === todo.id) {
+              todoLocal.additionalTodos = newAdditioalTodo;
+            }
+          });
+          localStorage.setItem("todos", JSON.stringify(todoz));
+          setAdditionalTodos(newAdditioalTodo);
+        }
+      }
+    }
+  }, [additionalTodoText, todo, todoz]);
+
   return (
     <div className={classes.screen}>
       <div className={classes.main}>
@@ -206,8 +251,25 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
               placeholder="Add additional task"
               onFocus={() => setFocus(true)}
               onBlur={() => setFocus(false)}
+              onKeyUp={(key) =>
+                key.key === "Enter" ? addAdditionalTodo() : null
+              }
               onChange={(event) => getAdditionalText(event.target.value)}
             />
+          </div>
+          <div
+            style={{
+              display: "block",
+              width: percent(90),
+            }}
+          >
+            {additionalTodos.map((additionalTodo) => (
+              <TodoBlock
+                name="additional"
+                id={additionalTodo.id}
+                text={additionalTodo.content}
+              />
+            ))}
           </div>
         </div>
       </Drawer>

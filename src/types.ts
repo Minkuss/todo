@@ -17,6 +17,6 @@ export type IApiData = {
 export interface IAdditionalTodo {
   content: string;
   status?: string;
-  type: string;
+  type?: string;
   id: string;
 }
