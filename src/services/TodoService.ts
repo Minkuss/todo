@@ -10,5 +10,5 @@ export const TodoService = {
     const todos: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
     const newTodos = todos.filter(todo => todo.id !== id);
     localStorage.setItem("todos", JSON.stringify(newTodos));
-  },
+  }
 }

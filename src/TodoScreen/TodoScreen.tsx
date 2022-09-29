@@ -41,6 +41,7 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
   const [additionalTodos, setAdditionalTodos] = useState<IAdditionalTodo[]>([]);
 
   useEffect(() => {
+    // fetching data from localstorage
     if (name.toLowerCase() === "today") {
       const data: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
       const todos = data.filter(
@@ -64,6 +65,7 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
       localStorage.getItem("todos") || "[]"
     );
 
+    // fetching additional todo for current todo
     todosLocal.map((todoLoc) => {
       if (todoLoc.id === todo?.id) {
         setAdditionalTodos(todoLoc.additionalTodos || []);
@@ -74,6 +76,7 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
   }, [name, seacrhedTodos, todo?.id]);
 
   const showEditBlock = (id: string) => {
+    // showing drawer
     setClicked(true);
     setTodo(todoz.find((element) => element.id === id));
     const todoLocal = todoz.find((element) => element.id === id);
@@ -81,6 +84,7 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
   };
 
   const changeText = (text: string) => {
+    // change todo.content || change todo text
     if (todo?.content !== undefined) {
       todo.content = text;
       setTodo(todo);
@@ -110,6 +114,7 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
   };
 
   const getValue = (text: string) => {
+    // getting input value for todo
     setTodozText(text);
   };
 
@@ -153,46 +158,45 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
     TodoService.delete(id);
   };
 
+  const delAdditionalTodo = (id: string) => {
+    if (todo?.additionalTodos !== undefined) {
+      const deletedTodo = additionalTodos.filter((el) => el.id !== id);
+      todoz.map((todoLocal) => {
+        if (todoLocal.id === todo?.id) {
+          todoLocal.additionalTodos = deletedTodo;
+        }
+      });
+      localStorage.setItem("todos", JSON.stringify(todoz));
+      setAdditionalTodos(deletedTodo);
+    }
+  };
+
   const getAdditionalText = (text: string) => {
+    // getting input value for additional todo content
     setAdditionalTodoText(text);
   };
 
   const addAdditionalTodo = useCallback(() => {
+    // adding additional todo for current todo
     if (additionalTodoText !== "") {
       const obj = {
         content: additionalTodoText,
         id: nanoid(),
       };
-      if (todo?.additionalTodos !== undefined) {
-        const newAdditioalTodo: IAdditionalTodo[] = [
-          ...todo?.additionalTodos,
-          obj,
-        ];
-        todoz.map((todoLocal) => {
-          if (todoLocal.id === todo.id) {
-            todoLocal.additionalTodos = newAdditioalTodo;
-          }
-        });
-        localStorage.setItem("todos", JSON.stringify(todoz));
-        setAdditionalTodos(newAdditioalTodo);
-      } else {
-        if (todo !== undefined) {
-          const newAdditioalTodo: IAdditionalTodo[] = [
-            ...(todo.additionalTodos || []),
-            obj,
-          ];
-          todoz.map((todoLocal) => {
-            if (todoLocal.id === todo.id) {
-              todoLocal.additionalTodos = newAdditioalTodo;
-            }
-          });
-          localStorage.setItem("todos", JSON.stringify(todoz));
-          setAdditionalTodos(newAdditioalTodo);
+      const newAdditioalTodo: IAdditionalTodo[] = [
+        ...(additionalTodos || []),
+        obj,
+      ];
+      todoz.map((todoLocal) => {
+        if (todoLocal.id === todo?.id) {
+          todoLocal.additionalTodos = newAdditioalTodo;
         }
-      }
+      });
+      localStorage.setItem("todos", JSON.stringify(todoz));
+      setAdditionalTodos(newAdditioalTodo);
       setAdditionalTodoText("");
     }
-  }, [additionalTodoText, todo, todoz]);
+  }, [additionalTodoText, additionalTodos, todo?.id, todoz]);
 
   return (
     <div className={classes.screen}>
@@ -276,6 +280,7 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
                 name="additional"
                 id={additionalTodo.id}
                 text={additionalTodo.content}
+                onClick={() => delAdditionalTodo(additionalTodo.id)}
               />
             ))}
           </div>
