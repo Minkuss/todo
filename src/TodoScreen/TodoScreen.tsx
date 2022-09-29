@@ -99,9 +99,12 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
         );
         const before = todosLocal.slice(0, index);
         const after = todosLocal.slice(index + 1);
-        const newTodos = [...before, todo, ...after];
-        localStorage.setItem("todos", JSON.stringify(newTodos));
-        setClicked(false);
+        if (todo !== undefined) {
+          const newTodos = [...before, todo, ...after];
+          localStorage.setItem("todos", JSON.stringify(newTodos));
+          setClicked(false);
+          setTodoz(newTodos);
+        }
       }
     }
   };
@@ -174,7 +177,10 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
         setAdditionalTodos(newAdditioalTodo);
       } else {
         if (todo !== undefined) {
-          const newAdditioalTodo: IAdditionalTodo[] = [obj];
+          const newAdditioalTodo: IAdditionalTodo[] = [
+            ...(todo.additionalTodos || []),
+            obj,
+          ];
           todoz.map((todoLocal) => {
             if (todoLocal.id === todo.id) {
               todoLocal.additionalTodos = newAdditioalTodo;
@@ -184,6 +190,7 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
           setAdditionalTodos(newAdditioalTodo);
         }
       }
+      setAdditionalTodoText("");
     }
   }, [additionalTodoText, todo, todoz]);
 
@@ -255,6 +262,7 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
                 key.key === "Enter" ? addAdditionalTodo() : null
               }
               onChange={(event) => getAdditionalText(event.target.value)}
+              value={additionalTodoText}
             />
           </div>
           <div
