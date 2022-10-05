@@ -42,8 +42,8 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
 
   useEffect(() => {
     // fetching data from localstorage
+    const data: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
     if (name.toLowerCase() === "today") {
-      const data: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
       const todos = data.filter(
         (todo) => todo.type === "today" || todo.type === "important"
       );
@@ -51,13 +51,10 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
     } else if (name === "Searched") {
       setTodoz(seacrhedTodos);
     } else if (name === "Shopping List") {
-      const data: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
       const todos = data.filter((todo) => todo.type === "shoppingList");
       setTodoz(todos);
     } else if (name === "Important") {
-      const todayData = localStorage.getItem("todos") || "[]";
-      const data2: ITodo[] = JSON.parse(todayData);
-      const signedTodos = data2.filter((todo) => todo.important === true);
+      const signedTodos = data.filter((todo) => todo.important === true);
       setTodoz(signedTodos);
     }
 

@@ -70,9 +70,6 @@ export const TodoBlock: FC<ITodoBlock> = (props) => {
       {props.name !== "Shopping List" && props.name !== "additional" ? (
         <Button
           onClick={() => {
-            // if (props.name !== "Important") {
-            //   signTodo();
-            // }
             signTodo();
           }}
           style={clicked === false ? { opacity: 0.5 } : { opacity: 1 }}

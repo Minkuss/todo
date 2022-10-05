@@ -1,11 +1,9 @@
 import { FC } from "react";
-import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { LeftNavigation } from "../LeftNavigation";
 import {
   ImportantScreen,
-  PlannedScreen,
   ShoppingListScreen,
-  StartScreen,
   TodayScreen,
   SearchPage,
 } from "../pages";
@@ -19,7 +17,6 @@ export const MainScreen: FC = () => {
       <Routes>
         <Route path="/today" element={<TodayScreen />} />
         <Route path="/important" element={<ImportantScreen />} />
-        <Route path="/planned" element={<PlannedScreen />} />
         <Route path="/shopping-list" element={<ShoppingListScreen />} />
         <Route path="/searched" element={<SearchPage />} />
       </Routes>
