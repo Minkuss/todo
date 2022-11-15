@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Button, ButtonGroup, Card, Drawer } from "@blueprintjs/core";
 
@@ -7,17 +7,12 @@ import classNames from "classnames";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { ITodo } from "../types";
 import { percent } from "csx";
-
-type LocationState = {
-  username: string;
-  todos: ITodo[];
-};
+import { UserContext } from "../context/userNameContext";
 
 export const LeftNavigation: FC = () => {
-  const location = useLocation();
   const navigate = useNavigate();
-  const state = location.state as LocationState;
   const [open, setOpen] = useState(false);
+  const { username } = useContext(UserContext);
 
   const onChange = (text: string) => {
     const todos: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
@@ -45,11 +40,7 @@ export const LeftNavigation: FC = () => {
               onChange(event.target.value);
             }}
           />
-          <NavLink
-            className={classes.link}
-            state={{ username: state.username }}
-            to={"/dashboard/today"}
-          >
+          <NavLink className={classes.link} to={"/dashboard/today"}>
             {({ isActive }) => (
               <Button
                 intent={isActive ? "primary" : "none"}
@@ -60,11 +51,7 @@ export const LeftNavigation: FC = () => {
               </Button>
             )}
           </NavLink>
-          <NavLink
-            className={classes.link}
-            state={{ username: state.username }}
-            to={"/dashboard/important"}
-          >
+          <NavLink className={classes.link} to={"/dashboard/important"}>
             {({ isActive }) => (
               <Button
                 intent={isActive ? "primary" : "none"}
@@ -75,11 +62,7 @@ export const LeftNavigation: FC = () => {
               </Button>
             )}
           </NavLink>
-          <NavLink
-            className={classes.link}
-            state={{ username: state.username }}
-            to={"/dashboard/shopping-list"}
-          >
+          <NavLink className={classes.link} to={"/dashboard/shopping-list"}>
             {({ isActive }) => (
               <Button
                 intent={isActive ? "primary" : "none"}
@@ -90,7 +73,7 @@ export const LeftNavigation: FC = () => {
               </Button>
             )}
           </NavLink>
-          <h3>{state.username}</h3>
+          <h3>{username}</h3>
           <div onClick={() => setOpen(true)} className={classes.burgerMenu}>
             <span className={classes.span}></span>
           </div>
@@ -111,11 +94,7 @@ export const LeftNavigation: FC = () => {
           minimal
           onClick={() => setOpen(false)}
         >
-          <NavLink
-            className={classes.linkDrawer}
-            state={{ username: state.username }}
-            to={"/dashboard/today"}
-          >
+          <NavLink className={classes.linkDrawer} to={"/dashboard/today"}>
             {({ isActive }) => (
               <Button
                 intent={isActive ? "primary" : "none"}
@@ -126,11 +105,7 @@ export const LeftNavigation: FC = () => {
               </Button>
             )}
           </NavLink>
-          <NavLink
-            className={classes.linkDrawer}
-            state={{ username: state.username }}
-            to={"/dashboard/important"}
-          >
+          <NavLink className={classes.linkDrawer} to={"/dashboard/important"}>
             {({ isActive }) => (
               <Button
                 intent={isActive ? "primary" : "none"}
@@ -143,7 +118,6 @@ export const LeftNavigation: FC = () => {
           </NavLink>
           <NavLink
             className={classes.linkDrawer}
-            state={{ username: state.username }}
             to={"/dashboard/shopping-list"}
           >
             {({ isActive }) => (

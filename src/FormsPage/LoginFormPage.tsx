@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import {
   Button,
   ButtonGroup,
@@ -16,82 +16,52 @@ import { nanoid } from "nanoid";
 import { IApiData, ITodo } from "../types";
 import { apiUrl } from "../urls";
 import classNames from "classnames";
+import { app } from "../index";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { UserContext } from "../context/userNameContext";
 
 export const LoginFormPage: FC = () => {
   const navigate = useNavigate();
   const [visible, setVisible] = useState(true);
   const [apidata, setapiData] = useState<IApiData[]>([]);
   const [match, setMatch] = useState(false);
-
-  useEffect(() => {}, []);
+  const { username, setUsername } = useContext(UserContext);
+  const auth = getAuth(app);
 
   const getLoginFormData = (data: { username: string; password: string }) => {
-    // apidata.map((el: { users: string; password: string; todos: ITodo[] }) => {
-    //   if (el.users === data.username && el.password === data.password) {
-    //     navigate("/dashboard", {
-    //       state: { username: el.users },
-    //     });
-    //     return 0;
-    //   }
-    // });
-
-    axios
-      .post(apiUrl + "/users/login", {
-        username: data.username,
-        password: data.password,
+    signInWithEmailAndPassword(auth, data.username, data.password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        navigate("/dashboard");
+        setUsername(user.email != null ? user.email : "anon");
       })
-      .then((resp) => {
-        console.log(resp);
-        console.log(resp.data);
-        sessionStorage.setItem("token", JSON.stringify(resp.data.token));
-        navigate("/dashboard", { state: { username: data.username } });
+      .catch((error) => {
+        const errorMessage = error.massage;
+        const errorCode = error.code;
+        console.log(errorCode);
+        console.log(errorMessage);
       });
-    let token = sessionStorage.getItem("token");
-    if (token) {
-      axios
-        .get(apiUrl + "/users", {
-          headers: {
-            Authorization: JSON.parse(token),
-          },
-        })
-        .then((resp) => {
-          const data: [] = resp.data;
-          setapiData(data);
-        });
-    }
   };
 
   const getRegisterFormData = (data: {
     username: string;
     password: string;
   }) => {
-    let flag = apidata.find(
-      (el: { users: string; password: string }) => el.users === data.username // проверка на одинаковые emails
-    );
-    if (flag === undefined) {
-      axios
-        .post(apiUrl, {
-          users: data.username,
-          password: data.password,
-          todos: [],
-        })
-        .then((res) => {
-          console.log(res);
-          console.log(res.data);
-        });
-      setMatch(false);
-      navigate("/dashboard", { state: { username: data.username } });
-    } else {
-      setMatch(!match);
-    }
-    axios
-      .post(apiUrl + "/users/signup", {
-        username: data.username,
-        password: data.password,
+    createUserWithEmailAndPassword(auth, data.username, data.password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        navigate("/dashboard");
+        setUsername(user.email != null ? user.email : "anon");
       })
-      .then((resp) => {
-        console.log(resp);
-        console.log(resp.data);
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode);
+        console.log(errorMessage);
       });
   };
 

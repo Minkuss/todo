@@ -7,14 +7,7 @@ import { TodoScreen } from "../TodoScreen";
 import { IApiData, ITodo } from "../types";
 import { apiUrl } from "../urls";
 
-type LocationState = {
-  username: string;
-  todos: ITodo[];
-};
-
 export const TodayScreen: FC = () => {
-  const location = useLocation();
-  const state = location.state as LocationState;
   const [apidata, setapiData] = useState<IApiData[]>([]);
 
   // const element = apidata.find((el) => el.users === state.username);

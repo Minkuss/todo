@@ -1,13 +1,16 @@
-import React, { FC, useCallback, useEffect, useState } from "react";
+import React, { FC, useCallback, useContext, useEffect, useState } from "react";
 import { Button, Drawer, Icon, InputGroup } from "@blueprintjs/core";
 import classNames from "classnames";
 import { percent } from "csx";
 import { nanoid } from "nanoid";
+import { collection, addDoc, setDoc, doc } from "firebase/firestore";
 
 import { TodoBlock } from "../components/TodoBlock/TodoBlock";
 import { TodoService } from "../services/TodoService";
 import { IAdditionalTodo, ITodo } from "../types";
 import * as classes from "./TodoScreen.styles";
+import { UserContext } from "../context/userNameContext";
+import { db } from "..";
 
 interface ITodoScreenProps {
   name: string;
@@ -39,6 +42,8 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
   const [additionalTodoText, setAdditionalTodoText] = useState("");
 
   const [additionalTodos, setAdditionalTodos] = useState<IAdditionalTodo[]>([]);
+
+  const { username } = useContext(UserContext);
 
   useEffect(() => {
     // fetching data from localstorage
@@ -115,7 +120,7 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
     setTodozText(text);
   };
 
-  const addTodo = useCallback(() => {
+  const addTodo = async () => {
     if (todozText !== "") {
       const obj = {
         content: todozText,
@@ -131,21 +136,12 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
 
       TodoService.create(obj);
 
-      // if (element) {
-      //   element.todos.push(obj);
-      //   axios
-      //     .put(`https://retoolapi.dev/xpODyJ/data/${element.id}`, {
-      //       users: element.users,
-      //       password: element.password,
-      //       todos: element.todos,
-      //     })
-      //     .then((res) => {
-      //       console.log(res);
-      //       console.log(res.data);
-      //     });
-      // }
+      await setDoc(doc(db, "users", username), {
+        email: username,
+        todos: newTodo,
+      });
     }
-  }, [todozText, name, todoz]);
+  };
 
   const delTodo = (id: string) => {
     const deletedTodo = todoz.filter((todo) => todo.id !== id);
