@@ -3,7 +3,14 @@ import { Button, Drawer, Icon, InputGroup } from "@blueprintjs/core";
 import classNames from "classnames";
 import { percent } from "csx";
 import { nanoid } from "nanoid";
-import { collection, addDoc, setDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  setDoc,
+  doc,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 
 import { TodoBlock } from "../components/TodoBlock/TodoBlock";
 import { TodoService } from "../services/TodoService";
@@ -43,39 +50,52 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
 
   const [additionalTodos, setAdditionalTodos] = useState<IAdditionalTodo[]>([]);
 
-  const { username } = useContext(UserContext);
+  // const { username } = useContext(UserContext);
+  const username = JSON.parse(localStorage.getItem("username") || "");
+
+  const getData = useCallback(async () => {
+    const docRef = doc(db, "users", username != null ? username : "anon");
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return docSnap.data();
+    } else {
+      console.log("Error, no such document");
+    }
+  }, [username]);
+
+  const dataSnap = getData();
 
   useEffect(() => {
     // fetching data from localstorage
-    const data: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
-    if (name.toLowerCase() === "today") {
-      const todos = data.filter(
-        (todo) => todo.type === "today" || todo.type === "important"
-      );
-      setTodoz(todos);
-    } else if (name === "Searched") {
-      setTodoz(seacrhedTodos);
-    } else if (name === "Shopping List") {
-      const todos = data.filter((todo) => todo.type === "shoppingList");
-      setTodoz(todos);
-    } else if (name === "Important") {
-      const signedTodos = data.filter((todo) => todo.important === true);
-      setTodoz(signedTodos);
-    }
-
-    const todosLocal: ITodo[] = JSON.parse(
-      localStorage.getItem("todos") || "[]"
-    );
-
-    // fetching additional todo for current todo
-    todosLocal.map((todoLoc) => {
-      if (todoLoc.id === todo?.id) {
-        setAdditionalTodos(todoLoc.additionalTodos || []);
+    // const data: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
+    dataSnap.then((value) => {
+      const data: ITodo[] = value !== undefined ? value.todos : [];
+      if (name.toLowerCase() === "today") {
+        const todos = data.filter(
+          (todo) => todo.type === "today" || todo.type === "important"
+        );
+        setTodoz(todos);
+      } else if (name === "Searched") {
+        setTodoz(seacrhedTodos);
+      } else if (name === "Shopping List") {
+        const todos = data.filter((todo) => todo.type === "shoppingList");
+        setTodoz(todos);
+      } else if (name === "Important") {
+        const signedTodos = data.filter((todo) => todo.important === true);
+        setTodoz(signedTodos);
       }
+      const todosLocal: ITodo[] = data;
+
+      // fetching additional todo for current todo
+      todosLocal.map((todoLoc) => {
+        if (todoLoc.id === todo?.id) {
+          setAdditionalTodos(todoLoc.additionalTodos || []);
+        }
+      });
     });
 
     // getData();
-  }, [name, seacrhedTodos, todo?.id]);
+  }, [getData, name, seacrhedTodos, todo?.id]);
 
   const showEditBlock = (id: string) => {
     // showing drawer
@@ -97,20 +117,31 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
   const editTodo = (key: React.KeyboardEvent) => {
     if (key.key === "Enter") {
       if (todo?.content !== "") {
-        const todosLocal: ITodo[] = JSON.parse(
-          localStorage.getItem("todos") || "[]"
-        );
-        const index = todosLocal.findIndex(
-          (element) => element.id === todo?.id
-        );
-        const before = todosLocal.slice(0, index);
-        const after = todosLocal.slice(index + 1);
-        if (todo !== undefined) {
-          const newTodos = [...before, todo, ...after];
-          localStorage.setItem("todos", JSON.stringify(newTodos));
-          setClicked(false);
-          setTodoz(newTodos);
-        }
+        // const todosLocal: ITodo[] = JSON.parse(
+        //   localStorage.getItem("todos") || "[]"
+        // );
+        dataSnap.then(async (value) => {
+          const data: ITodo[] = value !== undefined ? value.todos : [];
+          const todosLocal = data;
+          const index = todosLocal.findIndex(
+            (element) => element.id === todo?.id
+          );
+          const before = todosLocal.slice(0, index);
+          const after = todosLocal.slice(index + 1);
+          if (todo !== undefined) {
+            const newTodos = [...before, todo, ...after];
+            // localStorage.setItem("todos", JSON.stringify(newTodos));
+            setClicked(false);
+            setTodoz(newTodos);
+            await setDoc(
+              doc(db, "users", username != null ? username : "anon"),
+              {
+                email: username,
+                todos: newTodos,
+              }
+            );
+          }
+        });
       }
     }
   };
@@ -126,7 +157,7 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
         content: todozText,
         type: name === "Shopping List" ? "shoppingList" : name.toLowerCase(),
         id: nanoid(),
-        important: false,
+        important: name === "Important" ? true : false,
       };
 
       const newTodo: ITodo[] = [...todoz, obj];
@@ -134,33 +165,37 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
       setTodoz(newTodo);
       setTodozText("");
 
-      TodoService.create(obj);
-
-      await setDoc(doc(db, "users", username), {
-        email: username,
-        todos: newTodo,
-      });
+      TodoService.create(obj, dataSnap);
     }
   };
 
-  const delTodo = (id: string) => {
+  const delTodo = async (id: string) => {
     const deletedTodo = todoz.filter((todo) => todo.id !== id);
 
     setTodoz(deletedTodo);
 
-    TodoService.delete(id);
+    TodoService.delete(id, dataSnap);
   };
 
-  const delAdditionalTodo = (id: string) => {
+  const delAdditionalTodo = async (id: string) => {
     if (todo?.additionalTodos !== undefined) {
       const deletedTodo = additionalTodos.filter((el) => el.id !== id);
-      todoz.map((todoLocal) => {
-        if (todoLocal.id === todo?.id) {
-          todoLocal.additionalTodos = deletedTodo;
-        }
-      });
-      localStorage.setItem("todos", JSON.stringify(todoz));
+      // localStorage.setItem("todos", JSON.stringify(todoz));
       setAdditionalTodos(deletedTodo);
+      dataSnap.then(async (value) => {
+        const todos: ITodo[] = value !== undefined ? value.todos : [];
+        todos.map((todoLocal) => {
+          if (todoLocal.id === todo?.id) {
+            todoLocal.additionalTodos = deletedTodo;
+          }
+        });
+        await updateDoc(
+          doc(db, "users", username != null ? username : "anon"),
+          {
+            todos: todos,
+          }
+        );
+      });
     }
   };
 
@@ -180,16 +215,24 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
         ...(additionalTodos || []),
         obj,
       ];
-      todoz.map((todoLocal) => {
-        if (todoLocal.id === todo?.id) {
-          todoLocal.additionalTodos = newAdditioalTodo;
-        }
-      });
-      localStorage.setItem("todos", JSON.stringify(todoz));
       setAdditionalTodos(newAdditioalTodo);
       setAdditionalTodoText("");
+      dataSnap.then(async (value) => {
+        const todos: ITodo[] = value !== undefined ? value.todos : [];
+        todos.map((todoLocal) => {
+          if (todoLocal.id === todo?.id) {
+            todoLocal.additionalTodos = newAdditioalTodo;
+          }
+        });
+        await updateDoc(
+          doc(db, "users", username != null ? username : "anon"),
+          {
+            todos: todos,
+          }
+        );
+      });
     }
-  }, [additionalTodoText, additionalTodos, todo?.id, todoz]);
+  }, [additionalTodoText, additionalTodos, dataSnap, todo?.id, username]);
 
   return (
     <div className={classes.screen}>
@@ -270,6 +313,7 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
           >
             {additionalTodos.map((additionalTodo) => (
               <TodoBlock
+                key={additionalTodo.id}
                 name="additional"
                 id={additionalTodo.id}
                 text={additionalTodo.content}

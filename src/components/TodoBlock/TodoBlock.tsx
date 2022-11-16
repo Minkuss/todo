@@ -1,5 +1,7 @@
 import { Button, Icon, IconName } from "@blueprintjs/core";
-import React, { FC, useEffect, useState } from "react";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import React, { FC, useCallback, useEffect, useState } from "react";
+import { db } from "../..";
 import { ITodo } from "../../types";
 import * as classes from "./TodoBlock.styles";
 
@@ -14,27 +16,50 @@ interface ITodoBlock {
 export const TodoBlock: FC<ITodoBlock> = (props) => {
   const [clicked, setClicked] = useState(false);
   const [icon, setIcon] = useState<IconName>("circle");
+  const username = JSON.parse(localStorage.getItem("username") || "");
+
+  const getData = useCallback(async () => {
+    const docRef = doc(db, "users", username != null ? username : "anon");
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return docSnap.data();
+    } else {
+      console.log("Error, no such document");
+    }
+  }, [username]);
+
+  const dataSnap = getData();
 
   useEffect(() => {
-    const todos: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
-    todos.map((todo) => {
-      if (todo.id === props.id) {
-        if (todo.important !== undefined) {
-          setClicked(todo.important);
+    dataSnap.then((value) => {
+      const todos: ITodo[] = value !== undefined ? value.todos : [];
+      todos.map((todo) => {
+        if (todo.id === props.id) {
+          if (todo.important !== undefined) {
+            setClicked(todo.important);
+          }
         }
-      }
+      });
     });
+    // const todos: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
   });
 
   const signTodo = () => {
     setClicked(!clicked);
-    const todos: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
-    todos.map((todo) => {
-      if (todo.id === props.id) {
-        todo.important = !clicked;
-      }
+    // const todos: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
+    dataSnap.then(async (value) => {
+      const todos: ITodo[] = value !== undefined ? value.todos : [];
+      todos.map((todo) => {
+        if (todo.id === props.id) {
+          todo.important = !clicked;
+        }
+      });
+      await setDoc(doc(db, "users", username != null ? username : "anon"), {
+        email: username,
+        todos: todos,
+      });
+      // localStorage.setItem("todos", JSON.stringify(todos));
     });
-    localStorage.setItem("todos", JSON.stringify(todos));
   };
 
   const setIcons = () => {
