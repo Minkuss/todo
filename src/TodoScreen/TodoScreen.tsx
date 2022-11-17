@@ -95,7 +95,7 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
     });
 
     // getData();
-  }, [getData, name, seacrhedTodos, todo?.id]);
+  }, [dataSnap, getData, name, seacrhedTodos, todo?.id]);
 
   const showEditBlock = (id: string) => {
     // showing drawer
@@ -151,7 +151,7 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
     setTodozText(text);
   };
 
-  const addTodo = async () => {
+  const addTodo = () => {
     if (todozText !== "") {
       const obj = {
         content: todozText,
@@ -165,19 +165,19 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
       setTodoz(newTodo);
       setTodozText("");
 
-      TodoService.create(obj, dataSnap);
+      TodoService.create(obj, dataSnap, username);
     }
   };
 
-  const delTodo = async (id: string) => {
+  const delTodo = (id: string) => {
     const deletedTodo = todoz.filter((todo) => todo.id !== id);
 
     setTodoz(deletedTodo);
 
-    TodoService.delete(id, dataSnap);
+    TodoService.delete(id, dataSnap, username);
   };
 
-  const delAdditionalTodo = async (id: string) => {
+  const delAdditionalTodo = (id: string) => {
     if (todo?.additionalTodos !== undefined) {
       const deletedTodo = additionalTodos.filter((el) => el.id !== id);
       // localStorage.setItem("todos", JSON.stringify(todoz));

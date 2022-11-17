@@ -16,7 +16,7 @@ interface ITodoBlock {
 export const TodoBlock: FC<ITodoBlock> = (props) => {
   const [clicked, setClicked] = useState(false);
   const [icon, setIcon] = useState<IconName>("circle");
-  const username = JSON.parse(localStorage.getItem("username") || "");
+  const username = localStorage.getItem("username") || "";
 
   const getData = useCallback(async () => {
     const docRef = doc(db, "users", username != null ? username : "anon");
