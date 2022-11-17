@@ -37,11 +37,8 @@ export const LoginFormPage: FC = () => {
       .then((userCredential) => {
         const user = userCredential.user;
         navigate("/dashboard");
-        setUsername(user.email != null ? user.email : "anon");
-        localStorage.setItem(
-          "username",
-          JSON.stringify(user.email != null ? user.email : "anon")
-        );
+        // setUsername(user.email != null ? user.email : "anon");
+        localStorage.setItem("username", data.username);
       })
       .catch((error) => {
         const errorMessage = error.massage;
@@ -59,11 +56,8 @@ export const LoginFormPage: FC = () => {
       .then((userCredential) => {
         const user = userCredential.user;
         navigate("/dashboard");
-        setUsername(user.email != null ? user.email : "anon");
-        localStorage.setItem(
-          "username",
-          JSON.stringify(user.email != null ? user.email : "anon")
-        );
+        // setUsername(user.email != null ? user.email : "anon");
+        localStorage.setItem("username", data.username);
       })
       .catch((error) => {
         const errorCode = error.code;

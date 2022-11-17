@@ -51,7 +51,7 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
   const [additionalTodos, setAdditionalTodos] = useState<IAdditionalTodo[]>([]);
 
   // const { username } = useContext(UserContext);
-  const username = JSON.parse(localStorage.getItem("username") || "");
+  const username = localStorage.getItem("username") || "";
 
   const getData = useCallback(async () => {
     const docRef = doc(db, "users", username != null ? username : "anon");

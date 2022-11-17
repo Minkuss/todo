@@ -14,7 +14,8 @@ import { db } from "..";
 export const LeftNavigation: FC = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const { username } = useContext(UserContext);
+  // const { username } = useContext(UserContext);
+  const username = localStorage.getItem("username") || "";
 
   const getData = useCallback(async () => {
     const docRef = doc(db, "users", username != null ? username : "anon");
@@ -89,7 +90,7 @@ export const LeftNavigation: FC = () => {
               </Button>
             )}
           </NavLink>
-          <h3>{JSON.parse(localStorage.getItem("username") || "")}</h3>
+          <h3>{username}</h3>
           <div onClick={() => setOpen(true)} className={classes.burgerMenu}>
             <span className={classes.span}></span>
           </div>

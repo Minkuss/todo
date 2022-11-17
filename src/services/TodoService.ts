@@ -2,7 +2,8 @@ import { doc, DocumentData, setDoc } from "firebase/firestore";
 import { db } from "..";
 import { ITodo } from "../types";
 
-const username = JSON.parse(localStorage.getItem("username") || "");
+const username = localStorage.getItem("username") || "";
+
 
 export const TodoService = {
   create: (todo: ITodo, dataSnap: Promise<DocumentData | undefined>) => {
