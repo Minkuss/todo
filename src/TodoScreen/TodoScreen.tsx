@@ -1,16 +1,9 @@
 import React, { FC, useCallback, useContext, useEffect, useState } from "react";
-import { Button, Drawer, Icon, InputGroup } from "@blueprintjs/core";
+import { Drawer, Icon } from "@blueprintjs/core";
 import classNames from "classnames";
 import { percent } from "csx";
 import { nanoid } from "nanoid";
-import {
-  collection,
-  addDoc,
-  setDoc,
-  doc,
-  getDoc,
-  updateDoc,
-} from "firebase/firestore";
+import { setDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 
 import { TodoBlock } from "../components/TodoBlock/TodoBlock";
 import { TodoService } from "../services/TodoService";
@@ -50,8 +43,8 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
 
   const [additionalTodos, setAdditionalTodos] = useState<IAdditionalTodo[]>([]);
 
-  // const { username } = useContext(UserContext);
-  const username = localStorage.getItem("username") || "";
+  const { auth } = useContext(UserContext);
+  const username = auth.currentUser?.email || "anon";
 
   const getData = useCallback(async () => {
     const docRef = doc(db, "users", username != null ? username : "anon");
@@ -66,8 +59,6 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
   const dataSnap = getData();
 
   useEffect(() => {
-    // fetching data from localstorage
-    // const data: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
     dataSnap.then((value) => {
       const data: ITodo[] = value !== undefined ? value.todos : [];
       if (name.toLowerCase() === "today") {
@@ -86,19 +77,16 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
       }
       const todosLocal: ITodo[] = data;
 
-      // fetching additional todo for current todo
       todosLocal.map((todoLoc) => {
         if (todoLoc.id === todo?.id) {
           setAdditionalTodos(todoLoc.additionalTodos || []);
         }
       });
     });
-
-    // getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getData, name, seacrhedTodos, todo?.id]);
 
   const showEditBlock = (id: string) => {
-    // showing drawer
     setClicked(true);
     setTodo(todoz.find((element) => element.id === id));
     const todoLocal = todoz.find((element) => element.id === id);
@@ -106,7 +94,6 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
   };
 
   const changeText = (text: string) => {
-    // change todo.content || change todo text
     if (todo?.content !== undefined) {
       todo.content = text;
       setTodo(todo);
@@ -117,9 +104,6 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
   const editTodo = (key: React.KeyboardEvent) => {
     if (key.key === "Enter") {
       if (todo?.content !== "") {
-        // const todosLocal: ITodo[] = JSON.parse(
-        //   localStorage.getItem("todos") || "[]"
-        // );
         dataSnap.then(async (value) => {
           const data: ITodo[] = value !== undefined ? value.todos : [];
           const todosLocal = data;
@@ -130,7 +114,6 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
           const after = todosLocal.slice(index + 1);
           if (todo !== undefined) {
             const newTodos = [...before, todo, ...after];
-            // localStorage.setItem("todos", JSON.stringify(newTodos));
             setClicked(false);
             setTodoz(newTodos);
             await setDoc(
@@ -147,7 +130,6 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
   };
 
   const getValue = (text: string) => {
-    // getting input value for todo
     setTodozText(text);
   };
 
@@ -180,7 +162,6 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
   const delAdditionalTodo = (id: string) => {
     if (todo?.additionalTodos !== undefined) {
       const deletedTodo = additionalTodos.filter((el) => el.id !== id);
-      // localStorage.setItem("todos", JSON.stringify(todoz));
       setAdditionalTodos(deletedTodo);
       dataSnap.then(async (value) => {
         const todos: ITodo[] = value !== undefined ? value.todos : [];
@@ -200,12 +181,10 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
   };
 
   const getAdditionalText = (text: string) => {
-    // getting input value for additional todo content
     setAdditionalTodoText(text);
   };
 
   const addAdditionalTodo = useCallback(() => {
-    // adding additional todo for current todo
     if (additionalTodoText !== "") {
       const obj = {
         content: additionalTodoText,
@@ -257,9 +236,7 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
           <div className={classes.inputBlock}>
             <input
               value={todozText}
-              // onKeyUp={(key) => onKeyUp(key)}
               onKeyUp={(key) => (key.key === "Enter" ? addTodo() : null)}
-              // onChange={(event) => onChange(event.target.value)}
               onChange={(event) => getValue(event.target.value)}
               placeholder="What should be done"
               type="text"

@@ -3,10 +3,11 @@ import ReactDOM from "react-dom/client";
 import "normalize.css";
 import "@blueprintjs/core/lib/css/blueprint.css";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
-import { MainScreen } from "./MainScreen";
 import { CoreRouter } from "./core/router";
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { UserContext } from "./context/userNameContext";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCsJXnvteDUzXmOFbiGCuGw6jKNvd7H6oo",
@@ -20,12 +21,21 @@ const firebaseConfig = {
 
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
+const auth = getAuth(app);
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <CoreRouter />
+    <UserContext.Provider
+      value={{
+        app,
+        db,
+        auth,
+      }}
+    >
+      <CoreRouter />
+    </UserContext.Provider>
   </React.StrictMode>
 );

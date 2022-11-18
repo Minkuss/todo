@@ -1,6 +1,6 @@
-import { FC, useEffect, useState } from "react";
-import { Button, Card, FormGroup, InputGroup } from "@blueprintjs/core";
-import { SubmitHandler, useForm, ValidateResult } from "react-hook-form";
+import { FC } from "react";
+import { Button, Card, FormGroup } from "@blueprintjs/core";
+import { useForm, ValidateResult } from "react-hook-form";
 
 import * as classes from "./RegisterForm.styles";
 import classNames from "classnames";
@@ -31,11 +31,6 @@ export const RegisterForm: FC<IRegisterFormPage> = (props) => {
     <Card className={classes.card}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormGroup
-          // style={
-          //   errors.username?.message || errors.password?.message
-          //     ? { marginTop: "0%" }
-          //     : { marginTop: "4%" }
-          // }
           className={classes.formGroup}
           label="Write your email or nickname"
           helperText={errors.username?.message}
@@ -51,7 +46,6 @@ export const RegisterForm: FC<IRegisterFormPage> = (props) => {
             placeholder="best@gmail.com"
             className={classNames("bp4-input .modifier", classes.input)}
           />
-          {/* {match ? <span>bebra</span> : null} */}
         </FormGroup>
         <FormGroup
           helperText={errors.password?.message}

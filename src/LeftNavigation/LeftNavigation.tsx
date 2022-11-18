@@ -1,10 +1,9 @@
-import { FC, useCallback, useContext, useEffect, useState } from "react";
-import axios from "axios";
+import { FC, useCallback, useContext, useState } from "react";
 import { Button, ButtonGroup, Card, Drawer } from "@blueprintjs/core";
 
 import * as classes from "./LeftNavigation.styles";
 import classNames from "classnames";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { ITodo } from "../types";
 import { percent } from "csx";
 import { UserContext } from "../context/userNameContext";
@@ -14,8 +13,8 @@ import { db } from "..";
 export const LeftNavigation: FC = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  // const { username } = useContext(UserContext);
-  const username = localStorage.getItem("username") || "";
+  const { auth } = useContext(UserContext);
+  const username = auth.currentUser?.email;
 
   const getData = useCallback(async () => {
     const docRef = doc(db, "users", username != null ? username : "anon");
@@ -29,19 +28,26 @@ export const LeftNavigation: FC = () => {
 
   const dataSnap = getData();
 
-  const onChange = (text: string) => {
-    // const todos: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
-    dataSnap.then((value) => {
-      const todos: ITodo[] = value !== undefined ? value.todos : [];
-      if (text !== "" && todos !== undefined) {
-        navigate("/dashboard/searched", {
-          state: {
-            todos,
-            text,
-          },
-        });
-      }
-    });
+  const onChange = useCallback(
+    (text: string) => {
+      dataSnap.then((value) => {
+        const todos: ITodo[] = value !== undefined ? value.todos : [];
+        if (text !== "" && todos !== undefined) {
+          navigate("/dashboard/searched", {
+            state: {
+              todos,
+              text,
+            },
+          });
+        }
+      });
+    },
+    [dataSnap, navigate]
+  );
+
+  const logOut = () => {
+    auth.signOut();
+    navigate("/");
   };
 
   return (
@@ -90,7 +96,8 @@ export const LeftNavigation: FC = () => {
               </Button>
             )}
           </NavLink>
-          <h3>{username}</h3>
+          <div style={{ flexGrow: "1" }}></div>
+          <Button onClick={logOut} style={{ flexShrink: "0" }} text="Log out" />
           <div onClick={() => setOpen(true)} className={classes.burgerMenu}>
             <span className={classes.span}></span>
           </div>

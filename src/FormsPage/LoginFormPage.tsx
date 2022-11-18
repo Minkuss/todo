@@ -1,24 +1,12 @@
-import { FC, useContext, useEffect, useState } from "react";
-import {
-  Button,
-  ButtonGroup,
-  Card,
-  FormGroup,
-  InputGroup,
-} from "@blueprintjs/core";
+import { FC, useContext, useState } from "react";
+import { Button, ButtonGroup } from "@blueprintjs/core";
 import { useNavigate } from "react-router-dom";
 
 import * as classes from "./LoginFormPage.styles";
 import { LoginForm } from "../components/LoginForm";
 import { RegisterForm } from "../components/RegisterForm";
-import axios from "axios";
-import { nanoid } from "nanoid";
-import { IApiData, ITodo } from "../types";
-import { apiUrl } from "../urls";
 import classNames from "classnames";
-import { app } from "../index";
 import {
-  getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
@@ -27,21 +15,13 @@ import { UserContext } from "../context/userNameContext";
 export const LoginFormPage: FC = () => {
   const navigate = useNavigate();
   const [visible, setVisible] = useState(true);
-  const [apidata, setapiData] = useState<IApiData[]>([]);
   const [match, setMatch] = useState(false);
-  const { username, setUsername } = useContext(UserContext);
-  const auth = getAuth(app);
+  const { auth } = useContext(UserContext);
 
   const getLoginFormData = (data: { username: string; password: string }) => {
     signInWithEmailAndPassword(auth, data.username, data.password)
-      .then((userCredential) => {
-        const user = userCredential.user;
+      .then(() => {
         navigate("/dashboard");
-        // setUsername(user.email != null ? user.email : "anon");
-        localStorage.setItem(
-          "username",
-          user.email !== null ? user.email : "anon"
-        );
       })
       .catch((error) => {
         const errorMessage = error.massage;
@@ -56,14 +36,8 @@ export const LoginFormPage: FC = () => {
     password: string;
   }) => {
     createUserWithEmailAndPassword(auth, data.username, data.password)
-      .then((userCredential) => {
-        const user = userCredential.user;
+      .then(() => {
         navigate("/dashboard");
-        // setUsername(user.email != null ? user.email : "anon");
-        localStorage.setItem(
-          "username",
-          user.email !== null ? user.email : "anon"
-        );
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -91,7 +65,6 @@ export const LoginFormPage: FC = () => {
           active={!visible}
         />
       </ButtonGroup>
-      {/* <div style={{ width: "100%", display: "flex", justifyContent: "center" }}> */}
       {visible ? (
         <LoginForm onSubmit={(data) => getLoginFormData(data)} />
       ) : (
@@ -100,7 +73,6 @@ export const LoginFormPage: FC = () => {
           onSubmit={(data) => getRegisterFormData(data)}
         />
       )}
-      {/* </div> */}
     </div>
   );
 };

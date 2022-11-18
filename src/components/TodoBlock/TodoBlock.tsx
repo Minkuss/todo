@@ -1,7 +1,8 @@
 import { Button, Icon, IconName } from "@blueprintjs/core";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import React, { FC, useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useContext, useEffect, useState } from "react";
 import { db } from "../..";
+import { UserContext } from "../../context/userNameContext";
 import { ITodo } from "../../types";
 import * as classes from "./TodoBlock.styles";
 
@@ -16,7 +17,8 @@ interface ITodoBlock {
 export const TodoBlock: FC<ITodoBlock> = (props) => {
   const [clicked, setClicked] = useState(false);
   const [icon, setIcon] = useState<IconName>("circle");
-  const username = localStorage.getItem("username") || "";
+  const { auth } = useContext(UserContext);
+  const username = auth.currentUser?.email || "anon";
 
   const getData = useCallback(async () => {
     const docRef = doc(db, "users", username != null ? username : "anon");
@@ -41,12 +43,10 @@ export const TodoBlock: FC<ITodoBlock> = (props) => {
         }
       });
     });
-    // const todos: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
   });
 
   const signTodo = () => {
     setClicked(!clicked);
-    // const todos: ITodo[] = JSON.parse(localStorage.getItem("todos") || "[]");
     dataSnap.then(async (value) => {
       const todos: ITodo[] = value !== undefined ? value.todos : [];
       todos.map((todo) => {
@@ -58,7 +58,6 @@ export const TodoBlock: FC<ITodoBlock> = (props) => {
         email: username,
         todos: todos,
       });
-      // localStorage.setItem("todos", JSON.stringify(todos));
     });
   };
 
