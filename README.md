@@ -1,1 +1,1 @@
-Just simple Todo app on React + TypeScript
+Just simple Todo app on React + TypeScript and Firebase
