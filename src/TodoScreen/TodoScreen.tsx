@@ -95,7 +95,7 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
     });
 
     // getData();
-  }, [dataSnap, getData, name, seacrhedTodos, todo?.id]);
+  }, [getData, name, seacrhedTodos, todo?.id]);
 
   const showEditBlock = (id: string) => {
     // showing drawer
