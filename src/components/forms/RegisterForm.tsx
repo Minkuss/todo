@@ -1,21 +1,22 @@
-import { FC, useEffect } from "react";
-import { Button, Card, FormGroup, InputGroup } from "@blueprintjs/core";
-import { SubmitHandler, useForm, ValidateResult } from "react-hook-form";
+import { FC } from "react";
+import { Button, Card, FormGroup } from "@blueprintjs/core";
+import { useForm, ValidateResult } from "react-hook-form";
 
-import * as classes from "./LoginForm.styles";
+import * as classes from "./form.styles";
 import classNames from "classnames";
 
-export interface ILoginForm {
+export interface IRegisterForm {
   username: string;
   password: string;
 }
 
-export interface ILoginFormPage {
+export interface IRegisterFormPage {
   onSubmit: (value: { username: string; password: string }) => unknown;
+  match: boolean;
 }
 
-export const LoginForm: FC<ILoginFormPage> = (props) => {
-  const { onSubmit }: ILoginFormPage = {
+export const RegisterForm: FC<IRegisterFormPage> = (props) => {
+  const { onSubmit, match }: IRegisterFormPage = {
     ...defaultProps,
     ...props,
   };
@@ -24,19 +25,14 @@ export const LoginForm: FC<ILoginFormPage> = (props) => {
     formState: { errors },
     register,
     handleSubmit,
-  } = useForm<ILoginForm>();
+  } = useForm<IRegisterForm>();
 
   return (
     <Card className={classes.card}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormGroup
-          // style={
-          //   errors.username?.message || errors.password?.message
-          //     ? { marginTop: "0%" }
-          //     : { marginTop: "4%" }
-          // }
           className={classes.formGroup}
-          label="Login"
+          label="Write your email or nickname"
           helperText={errors.username?.message}
         >
           <input
@@ -45,21 +41,22 @@ export const LoginForm: FC<ILoginFormPage> = (props) => {
                 value: true,
                 message: "Please enter your email or nickname",
               },
+              validate: (value) => validateUsername(value, match),
             })}
-            placeholder="Enter your login (email, nickname)"
+            placeholder="best@gmail.com"
             className={classNames("bp4-input .modifier", classes.input)}
           />
         </FormGroup>
         <FormGroup
           helperText={errors.password?.message}
           className={classes.formGroup}
-          label="Password"
+          label="Create your password"
         >
           <input
             {...register("password", {
               required: { value: true, message: "Please enter your password" },
             })}
-            placeholder="Enter your password"
+            placeholder="Super secret password"
             className={classNames("bp4-input .modifier", classes.input)}
           />
         </FormGroup>
@@ -67,7 +64,7 @@ export const LoginForm: FC<ILoginFormPage> = (props) => {
           className={classes.btn}
           intent="primary"
           fill
-          text="Sign in"
+          text="Sign up"
           type="submit"
         />
       </form>
@@ -75,6 +72,22 @@ export const LoginForm: FC<ILoginFormPage> = (props) => {
   );
 };
 
-const defaultProps: Required<ILoginFormPage> = {
+function validateUsername(username: string, match: boolean): ValidateResult {
+  let valText = "";
+
+  if (username.includes(" ")) {
+    valText = "Invalid format for login";
+  } else {
+    valText = "This account name is already exists";
+  }
+
+  if (match === false && username !== "2") {
+    return undefined;
+  }
+  return valText;
+}
+
+const defaultProps: Required<IRegisterFormPage> = {
   onSubmit: () => {},
+  match: false,
 };

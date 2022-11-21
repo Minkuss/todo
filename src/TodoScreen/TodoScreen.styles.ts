@@ -53,6 +53,16 @@ export const screen = style({
   flexGrow: 1,
 })
 
+
+export const drawerCloserBtn = style({
+  display: 'none',
+  "$nest": {
+    "@media screen and (max-width: 600px)": {
+      display: 'block',
+    }
+  }
+})
+
 export const edit = style({
   // backgroundColor: '#D9D9D9',
   width: percent(100),

@@ -6,7 +6,12 @@ export const main = style({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  flexDirection: 'column'
+  flexDirection: 'column',
+  "$nest": {
+    "@media screen and (max-width: 445px)": {
+        overflow: 'hidden'
+      }
+  }
 })
 
 export const btn = style({
@@ -23,7 +28,7 @@ export const btn = style({
 export const btnGroup = style({
   background: "#D9D9D9",
   borderRadius: px(100),
-  width: percent(20),
+  width: "calc(320px + (100 — 320) * ((100vw — 375px) / (1920 — 375)))",
   zIndex: "1"
 })
 

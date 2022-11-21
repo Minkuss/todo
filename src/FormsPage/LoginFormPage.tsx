@@ -3,8 +3,8 @@ import { Button, ButtonGroup } from "@blueprintjs/core";
 import { useNavigate } from "react-router-dom";
 
 import * as classes from "./LoginFormPage.styles";
-import { LoginForm } from "../components/LoginForm";
-import { RegisterForm } from "../components/RegisterForm";
+import { LoginForm } from "../components/forms";
+import { RegisterForm } from "../components/forms";
 import classNames from "classnames";
 import {
   createUserWithEmailAndPassword,

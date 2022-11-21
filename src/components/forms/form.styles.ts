@@ -8,14 +8,13 @@ const move = keyframes({
 })
 
 export const card = style({
-  // display: 'flex',
   fontSize: px(20),
   background: "#D9D9D9",
   borderRadius: px(30),
-  width: percent(40),
+  width: "calc(320px + (450 — 320) * ((100vw — 375px) / (1920 — 375)))",
   height: px(308),
   animationName: move,
-  animationDuration: '1s'
+  animationDuration: '1s',
 })
 
 export const input = style({

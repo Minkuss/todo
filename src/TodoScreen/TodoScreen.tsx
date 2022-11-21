@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useContext, useEffect, useState } from "react";
-import { Drawer, Icon } from "@blueprintjs/core";
+import { Button, Drawer, Icon } from "@blueprintjs/core";
 import classNames from "classnames";
 import { percent } from "csx";
 import { nanoid } from "nanoid";
@@ -213,6 +213,16 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
     }
   }, [additionalTodoText, additionalTodos, dataSnap, todo?.id, username]);
 
+  const drawerSizer = () => {
+    if (window.screen.width <= 600) {
+      return percent(100);
+    } else if (window.screen.width > 600) {
+      return percent(40);
+    } else {
+      return undefined;
+    }
+  };
+
   return (
     <div className={classes.screen}>
       <div className={classes.main}>
@@ -251,7 +261,8 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
             setClicked(false);
           }
         }}
-        size={percent(40)}
+        size={drawerSizer()}
+        // className={classes.drawer}
         isOpen={clicked}
       >
         <div className={classes.edit}>
@@ -298,6 +309,11 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
               />
             ))}
           </div>
+          <Button
+            className={classes.drawerCloserBtn}
+            onClick={() => setClicked(false)}
+            text="Close"
+          />
         </div>
       </Drawer>
     </div>
