@@ -58,7 +58,7 @@ export const drawerCloserBtn = style({
   display: 'none',
   "$nest": {
     "@media screen and (max-width: 600px)": {
-      display: 'block',
+      display: 'flex',
     }
   }
 })

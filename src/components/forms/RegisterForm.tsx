@@ -3,6 +3,7 @@ import { Button, Card, FormGroup } from "@blueprintjs/core";
 import { useForm, ValidateResult } from "react-hook-form";
 
 import * as classes from "./form.styles";
+import * as anim from "./animation.styles";
 import classNames from "classnames";
 
 export interface IRegisterForm {

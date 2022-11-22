@@ -1,5 +1,5 @@
 import { FC, useContext, useState } from "react";
-import { Button, ButtonGroup } from "@blueprintjs/core";
+import { Alert, Button, ButtonGroup, Spinner } from "@blueprintjs/core";
 import { useNavigate } from "react-router-dom";
 
 import * as classes from "./LoginFormPage.styles";
@@ -11,17 +11,21 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { UserContext } from "../context/userNameContext";
+import { percent, px } from "csx";
 
 export const LoginFormPage: FC = () => {
   const navigate = useNavigate();
   const [visible, setVisible] = useState(true);
   const [match, setMatch] = useState(false);
   const { auth } = useContext(UserContext);
+  const [loadingState, setLoadingState] = useState(false);
 
   const getLoginFormData = (data: { username: string; password: string }) => {
+    setLoadingState(true);
     signInWithEmailAndPassword(auth, data.username, data.password)
       .then(() => {
         navigate("/dashboard");
+        setLoadingState(false);
       })
       .catch((error) => {
         const errorMessage = error.massage;
@@ -35,9 +39,11 @@ export const LoginFormPage: FC = () => {
     username: string;
     password: string;
   }) => {
+    setLoadingState(true);
     createUserWithEmailAndPassword(auth, data.username, data.password)
       .then(() => {
         navigate("/dashboard");
+        setLoadingState(false);
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -72,6 +78,26 @@ export const LoginFormPage: FC = () => {
           match={match}
           onSubmit={(data) => getRegisterFormData(data)}
         />
+      )}
+      {loadingState && (
+        <div
+          style={{
+            width: percent(100),
+            height: percent(100),
+            zIndex: "999",
+            position: "absolute",
+            backdropFilter: "blur(25px)",
+          }}
+        >
+          <Spinner
+            style={{
+              position: "relative",
+              top: percent(50),
+            }}
+            size={100}
+            intent="primary"
+          />
+        </div>
       )}
     </div>
   );

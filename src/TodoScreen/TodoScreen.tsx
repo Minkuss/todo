@@ -262,10 +262,15 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
           }
         }}
         size={drawerSizer()}
-        // className={classes.drawer}
         isOpen={clicked}
       >
         <div className={classes.edit}>
+          <Button
+            className={classes.drawerCloserBtn}
+            onClick={() => setClicked(false)}
+            minimal
+            icon="delete"
+          />
           <input
             className={classNames("bp4-input .modifier", classes.editInput)}
             value={editedText}
@@ -309,11 +314,6 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
               />
             ))}
           </div>
-          <Button
-            className={classes.drawerCloserBtn}
-            onClick={() => setClicked(false)}
-            text="Close"
-          />
         </div>
       </Drawer>
     </div>

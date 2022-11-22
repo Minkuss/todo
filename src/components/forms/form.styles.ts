@@ -1,11 +1,6 @@
 import { percent, px } from "csx";
 import { keyframes, style } from "typestyle";
 
-const move = keyframes({
-  "0%": {marginRight: percent(100), width: percent(10), fontSize: px(1)},
-  "50%": {marginLeft: percent(20)},
-  "100%": {marginRight: percent(0)}
-})
 
 export const card = style({
   fontSize: px(20),
@@ -13,8 +8,6 @@ export const card = style({
   borderRadius: px(30),
   width: "calc(320px + (450 — 320) * ((100vw — 375px) / (1920 — 375)))",
   height: px(308),
-  animationName: move,
-  animationDuration: '1s',
 })
 
 export const input = style({
