@@ -223,6 +223,18 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
     }
   };
 
+  const signTodo = async (id: string) => {
+    todoz.map((todo) => {
+      if (todo.id === id) {
+        todo.important = !todo.important;
+      }
+    });
+    await setDoc(doc(db, "users", username != null ? username : "anon"), {
+      email: username,
+      todos: todoz,
+    });
+  };
+
   return (
     <div className={classes.screen}>
       <div className={classes.main}>
@@ -239,6 +251,7 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
               text={todo.content}
               id={todo.id}
               onEdit={(id) => showEditBlock(id)}
+              signTodo={() => signTodo(todo.id)}
             />
           ))}
         </div>

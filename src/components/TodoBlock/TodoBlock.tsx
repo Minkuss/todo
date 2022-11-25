@@ -9,12 +9,18 @@ import * as classes from "./TodoBlock.styles";
 interface ITodoBlock {
   text: string;
   onClick?: () => unknown;
+  signTodo?: () => unknown;
+  onEdit?: (value: string) => unknown;
   name: string;
   id: string;
-  onEdit?: (value: string) => unknown;
 }
 
 export const TodoBlock: FC<ITodoBlock> = (props) => {
+  const { text, onClick, name, id, onEdit, signTodo }: ITodoBlock = {
+    ...defaultProps,
+    ...props,
+  };
+
   const [clicked, setClicked] = useState(false);
   const [icon, setIcon] = useState<IconName>("circle");
   const { auth } = useContext(UserContext);
@@ -33,33 +39,18 @@ export const TodoBlock: FC<ITodoBlock> = (props) => {
   const dataSnap = getData();
 
   useEffect(() => {
+    console.log("render");
     dataSnap.then((value) => {
       const todos: ITodo[] = value !== undefined ? value.todos : [];
-      todos.map((todo) => {
-        if (todo.id === props.id) {
+      todos.forEach((todo) => {
+        if (todo.id === id) {
           if (todo.important !== undefined) {
             setClicked(todo.important);
           }
         }
       });
     });
-  });
-
-  const signTodo = () => {
-    setClicked(!clicked);
-    dataSnap.then(async (value) => {
-      const todos: ITodo[] = value !== undefined ? value.todos : [];
-      todos.map((todo) => {
-        if (todo.id === props.id) {
-          todo.important = !clicked;
-        }
-      });
-      await setDoc(doc(db, "users", username != null ? username : "anon"), {
-        email: username,
-        todos: todos,
-      });
-    });
-  };
+  }, []);
 
   const setIcons = () => {
     setIcon("confirm");
@@ -72,7 +63,7 @@ export const TodoBlock: FC<ITodoBlock> = (props) => {
   return (
     <div className={classes.todoBlock}>
       <Button
-        onClick={props.onClick}
+        onClick={onClick}
         className={classes.deleteTodo}
         minimal
         onMouseOver={setIcons}
@@ -84,17 +75,16 @@ export const TodoBlock: FC<ITodoBlock> = (props) => {
         alignText="left"
         minimal
         className={classes.todo}
-        text={props.text}
+        text={text}
         onClick={() => {
-          if (props.onEdit !== undefined) {
-            props.onEdit(props.id);
-          }
+          onEdit(id);
         }}
       />
-      {props.name !== "Shopping List" && props.name !== "additional" ? (
+      {name !== "Shopping List" && name !== "additional" ? (
         <Button
           onClick={() => {
             signTodo();
+            setClicked(!clicked);
           }}
           style={clicked === false ? { opacity: 0.5 } : { opacity: 1 }}
           className={classes.sign}
@@ -104,4 +94,13 @@ export const TodoBlock: FC<ITodoBlock> = (props) => {
       ) : null}
     </div>
   );
+};
+
+const defaultProps: Required<ITodoBlock> = {
+  text: "",
+  onClick: () => {},
+  signTodo: () => {},
+  name: "",
+  id: "",
+  onEdit: () => {},
 };
