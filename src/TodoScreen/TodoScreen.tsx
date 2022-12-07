@@ -19,10 +19,11 @@ interface ITodoScreenProps {
   onChange?: (value: string) => unknown;
   todoText?: string;
   onClick?: (value: string) => unknown;
+  searchedText?: string;
 }
 
 export const TodoScreen: FC<ITodoScreenProps> = (props) => {
-  const { name, seacrhedTodos, onClick }: ITodoScreenProps = {
+  const { name, seacrhedTodos, onClick, searchedText }: ITodoScreenProps = {
     ...defaultProps,
     ...props,
   };
@@ -224,15 +225,32 @@ export const TodoScreen: FC<ITodoScreenProps> = (props) => {
   };
 
   const signTodo = async (id: string) => {
-    todoz.map((todo) => {
-      if (todo.id === id) {
-        todo.important = !todo.important;
-      }
-    });
-    await setDoc(doc(db, "users", username != null ? username : "anon"), {
-      email: username,
-      todos: todoz,
-    });
+    if (name === "Searched") {
+      dataSnap.then(async (value) => {
+        const todos: ITodo[] = value !== undefined ? value.todos : [];
+        todos.map((todo) => {
+          todoz.map((el) => {
+            if (todo.id === el.id && el.id === id) {
+              todo.important = !todo.important;
+            }
+          });
+        });
+        await setDoc(doc(db, "users", username != null ? username : "anon"), {
+          email: username,
+          todos: todos,
+        });
+      });
+    } else {
+      todoz.map((todo) => {
+        if (todo.id === id) {
+          todo.important = !todo.important;
+        }
+      });
+      await setDoc(doc(db, "users", username != null ? username : "anon"), {
+        email: username,
+        todos: todoz,
+      });
+    }
   };
 
   return (
@@ -340,4 +358,5 @@ const defaultProps: Required<ITodoScreenProps> = {
   onKeyUp: () => {},
   todoText: "",
   onClick: () => {},
+  searchedText: "",
 };

@@ -1,5 +1,6 @@
-import { FC } from "react";
-import { Route, Routes } from "react-router-dom";
+import { FC, useEffect } from "react";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import { useAuthStatus } from "../hooks/use-auth-status";
 import { LeftNavigation } from "../LeftNavigation";
 import {
   ImportantScreen,
@@ -11,7 +12,16 @@ import {
 import * as classes from "./MainScreen.styles";
 
 export const MainScreen: FC = () => {
-  return (
+  const authStatus = useAuthStatus();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log("authRender");
+    if (authStatus !== "unauthenticated") return;
+    navigate("/login");
+  }, [authStatus, navigate]);
+
+  return authStatus === "authenticated" ? (
     <div className={classes.main}>
       <LeftNavigation />
       <Routes>
@@ -21,5 +31,5 @@ export const MainScreen: FC = () => {
         <Route path="/searched" element={<SearchPage />} />
       </Routes>
     </div>
-  );
+  ) : null;
 };

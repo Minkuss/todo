@@ -17,8 +17,9 @@ export const SearchPage: FC = () => {
   return (
     <TodoScreen
       seacrhedTodos={todos.filter((todo) =>
-        todo.content.toLowerCase().includes(text.toLowerCase())
+        todo.content.toLowerCase().includes(text)
       )}
+      searchedText={text.toLowerCase()}
       name="Searched"
     />
   );
